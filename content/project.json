@@ -88,16 +88,13 @@
       "blurb": "Racer, dad, and the reason this car is going back together. He gets the keys on February 14."
     },
     {
-      "name": "Jennifer Jo Cobb",
-      "role": "Crew · it was her first car",
-      "photo": "photos/people/jennifer-jo-cobb.jpg",
-      "blurb": "NASCAR driver, team owner, and founder of Driven2Honor. This Firebird was her first car, and it's her gift to her dad."
-    },
-    {
-      "name": "Steve & Nick",
-      "role": "Crew · on the clock",
-      "photo": "photos/people/steve-and-nick-bonneville.jpg",
-      "blurb": "Steve took the car apart years ago. Now the two of them are putting it back together, and every hour is counted."
+      "name": "Jennifer, Steve & Nick",
+      "role": "The crew",
+      "photos": [
+        "photos/people/jennifer-jo-cobb.jpg",
+        "photos/people/steve-and-nick-bonneville.jpg"
+      ],
+      "blurb": "Jennifer Jo Cobb, NASCAR driver and founder of Driven2Honor, whose first car this was. Steve, who took it apart years ago. Nick, who's helping put it back. All three of them turn wrenches, and Jennifer isn't afraid to get her hands dirty."
     }
   ],
   "thanks": []

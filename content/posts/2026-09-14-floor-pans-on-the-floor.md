@@ -18,4 +18,4 @@ The good news came in a box. Full floor pans and a trunk pan were picked up toda
 
 The underside shot is the honest one. The old undercoating is peeling off in sheets, and the metal under it is where the two-week clock really starts. Next up is marking every soft spot with tape, and then the cutoff wheel comes out.
 
-Jennifer stopped by to see her first car back on its feet. She's on the crew now, and she's not clocking in.
+Jennifer came by to see her first car back on its feet. She's on the crew with Nick and me, and she isn't afraid to get her hands dirty.

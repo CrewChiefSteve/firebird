@@ -150,7 +150,7 @@ def build_index(posts):
 </div>""" for i, p in enumerate(PROJECT["phases"]))
 
     people = "".join(
-        f"""<div class="person"><img src="{pp['photo']}" alt="{E(pp['name'])}"><div><div class="rl">{E(pp['role'])}</div><div class="nm">{E(pp['name'])}</div><div class="bl">{E(pp['blurb'])}</div></div></div>"""
+        f"""<div class="person"><div class="pics">{''.join(f'<img src="{ph}" alt="">' for ph in pp.get('photos', [pp.get('photo')]))}</div><div><div class="rl">{E(pp['role'])}</div><div class="nm">{E(pp['name'])}</div><div class="bl">{E(pp['blurb'])}</div></div></div>"""
         for pp in PROJECT["people"])
 
     phase_names = {p["id"]: p["name"] for p in PROJECT["phases"]}
@@ -187,7 +187,7 @@ def build_index(posts):
     <div>
       <p>Before it was a project car, this Pontiac was Jennifer Jo Cobb's first car. Long before the race trucks and the team with her name on the wall, this was the one in her driveway.</p>
       <p>A few years ago it came apart down to the shell. Every panel off, every bracket bagged and tagged, the body sanded and shot in primer. Then it waited, the way project cars do.</p>
-      <p>Now Jennifer wants to hand her dad the keys. Joe Cobb has spent a lifetime around race cars, and on February 14, 2027, his birthday, he gets this one. Steve and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel.</p>
+      <p>Now Jennifer wants to hand her dad the keys. Joe Cobb has spent a lifetime around race cars, and on February 14, 2027, his birthday, he gets this one. Jennifer, Steve, and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel.</p>
     </div>
     <div class="people">{people}</div>
   </div>
@@ -204,7 +204,7 @@ def build_index(posts):
 </div></section>
 {thanks_sec}
 <div class="wrap">{share_html(SITE + '/', PROJECT['title'])}</div>
-<footer class="wrap"><span>{E(PROJECT['title'])}</span><span class="sp"></span><span>Built in the shop by Steve &amp; Nick</span></footer>
+<footer class="wrap"><span>{E(PROJECT['title'])}</span><span class="sp"></span><span>Built in the shop by Jennifer, Steve &amp; Nick</span></footer>
 {COUNT_JS}"""
     return page(PROJECT["title"], PROJECT["tagline"], body, PROJECT["hero_photo"], SITE + "/")
 
@@ -238,7 +238,7 @@ def build_post(p, posts):
   {share_html(url, p['title'])}
   <p style="margin-top:24px;font-family:var(--sans);font-size:14px">{links}</p>
 </div>
-<footer class="wrap"><span>{E(PROJECT['title'])}</span><span class="sp"></span><span>Built in the shop by Steve &amp; Nick</span></footer>
+<footer class="wrap"><span>{E(PROJECT['title'])}</span><span class="sp"></span><span>Built in the shop by Jennifer, Steve &amp; Nick</span></footer>
 {COUNT_JS}"""
     og = photos[0] if photos else PROJECT["hero_photo"]
     return page(f"{p['title']} · {PROJECT['title']}", p.get("summary", ""), body, og, url, rel="../")
