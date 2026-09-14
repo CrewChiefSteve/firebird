@@ -1,0 +1,27 @@
+{
+  "title": "Project Firebird",
+  "tagline": "One Pontiac Firebird, one birthday, two guys in a shop.",
+  "site_url": "https://crewchiefsteve.github.io/firebird",
+  "hero_photo": "photos/2026-09-14/shell-in-primer.jpg",
+  "milestones": [
+    { "id": "rolling", "label": "Rolling chassis", "date": "2026-09-28" },
+    { "id": "birthday", "label": "Joe's birthday drive", "date": "2027-02-14" }
+  ],
+  "phases": [
+    { "id": "teardown",   "name": "Teardown",       "status": "done",    "pct": 100, "blurb": "Stripped to a shell years ago and put in primer." },
+    { "id": "rust",       "name": "Rust Repair",    "status": "active",  "pct": 0,   "blurb": "Floors, trunk, rails. Cut it out, weld it in." },
+    { "id": "por15",      "name": "POR-15",         "status": "up-next", "pct": 0,   "blurb": "Underside and interior sealed for good." },
+    { "id": "rearend",    "name": "Rear End",       "status": "up-next", "pct": 0,   "blurb": "Assembled rear end goes back under the car." },
+    { "id": "frontclip",  "name": "Front Clip",     "status": "up-next", "pct": 0,   "blurb": "Subframe bolted up. Wheels on. Off the stands." },
+    { "id": "drivetrain", "name": "Drivetrain",     "status": "later",   "pct": 0,   "blurb": "Engine, trans, fuel, brakes, wiring." },
+    { "id": "body",       "name": "Body & Paint",   "status": "later",   "pct": 0,   "blurb": "Panels hung, gaps set, color laid down." },
+    { "id": "interior",   "name": "Interior",       "status": "later",   "pct": 0,   "blurb": "Seats, dash, glass, the finishing touches." },
+    { "id": "firstdrive", "name": "First Drive",    "status": "later",   "pct": 0,   "blurb": "February 14, 2027. Keys to Joe." }
+  ],
+  "people": [
+    { "name": "Joe Cobb",          "role": "The birthday boy",  "photo": "photos/people/joe-and-jennifer.jpg",          "blurb": "Racer, dad, and the reason this car is going back together. He gets the keys on February 14." },
+    { "name": "Jennifer Jo Cobb",  "role": "Joe's daughter",    "photo": "photos/people/joe-and-jennifer-kleenex.jpg",  "blurb": "NASCAR driver, team owner, and founder of Driven2Honor. This one is her gift to her dad." },
+    { "name": "Steve & Nick",      "role": "The crew",          "photo": "photos/people/steve-and-nick-bonneville.jpg", "blurb": "Steve took the car apart years ago. Now the two of them are putting it back together, on the clock." }
+  ],
+  "thanks": []
+}
