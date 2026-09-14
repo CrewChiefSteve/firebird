@@ -7,7 +7,7 @@ photos:
 summary: Years after it came apart, the Firebird is back in the shop with a hard deadline and a two-week plan.
 ---
 
-This is where it starts. The Firebird has been sitting as a bare shell in red oxide primer since I pulled it apart a few years back. Every nut, bolt, and bracket is bagged and tagged, the rear end is already assembled, and the front clip is waiting on the other side of the shop.
+This is where it starts. This Firebird was Jennifer's first car. It has been sitting as a bare shell in primer since I pulled it apart a few years back. This photo is from back when it came apart. Every nut, bolt, and bracket is bagged and tagged, the rear end is already assembled, and the front clip is waiting on the other side of the shop.
 
 The reason it's back on the bench is simple. Joe Cobb turns another year older on February 14, 2027, and his daughter Jennifer wants him driving this car on his birthday. So Nick and I have a deadline, and we have a plan.
 

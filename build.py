@@ -171,11 +171,11 @@ def build_index(posts):
     body = f"""{nav()}
 <div class="wrap">
   <div class="hero">
-    <img src="{PROJECT['hero_photo']}" alt="The Firebird shell in red oxide primer">
+    <img src="{PROJECT['hero_photo']}" alt="The Firebird shell on its dolly in the shop">
     <div class="in">
       <div class="label">A birthday build · Kansas City</div>
       <h1>Joe's <span>Firebird</span></h1>
-      <p>{E(PROJECT['tagline'])} Follow along as Steve and Nick put this Pontiac back together in time for Joe Cobb's birthday.</p>
+      <p>{E(PROJECT['tagline'])} Jennifer Jo Cobb's first car is going back together so her dad Joe can drive it on his birthday. Follow along.</p>
     </div>
   </div>
 </div>
@@ -185,9 +185,9 @@ def build_index(posts):
   <div class="sec-h"><h2>Why this car</h2><span class="label">The story</span></div>
   <div class="story">
     <div>
-      <p>A few years ago this Firebird came apart on Steve's shop floor. Every panel off, every bracket bagged, the shell shot in red oxide primer and set aside. Life and racing got in the way, the way they do.</p>
-      <p>Then Jennifer Jo Cobb asked a question: could her dad drive it on his birthday? Joe Cobb has spent a lifetime around race cars, and Jennifer wanted to hand him the keys to this one on February 14, 2027.</p>
-      <p>So the car is back on the bench. Steve and Nick are working it in phases, on the clock, and posting the whole thing here as it happens. The first goal is a rolling chassis in two weeks. The last goal is Joe behind the wheel.</p>
+      <p>Before it was a project car, this Pontiac was Jennifer Jo Cobb's first car. Long before the race trucks and the team with her name on the wall, this was the one in her driveway.</p>
+      <p>A few years ago it came apart down to the shell. Every panel off, every bracket bagged and tagged, the body sanded and shot in primer. Then it waited, the way project cars do.</p>
+      <p>Now Jennifer wants to hand her dad the keys. Joe Cobb has spent a lifetime around race cars, and on February 14, 2027, his birthday, he gets this one. Steve and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel.</p>
     </div>
     <div class="people">{people}</div>
   </div>
@@ -246,7 +246,7 @@ def build_post(p, posts):
 
 def main():
     posts = sorted((parse_post(f) for f in (ROOT / "content" / "posts").glob("*.md")),
-                   key=lambda p: p["date_obj"], reverse=True)
+                   key=lambda p: (p["date_obj"], p["slug"]), reverse=True)
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "posts").mkdir(parents=True)
