@@ -253,6 +253,7 @@ def main():
     shutil.copytree(ROOT / "photos", OUT / "photos")
     shutil.copy(ROOT / "site" / "style.css", OUT / "style.css")
     (OUT / ".nojekyll").write_text("")
+    (OUT / "CNAME").write_text(SITE.replace("https://", "") + "\n")
     (OUT / "index.html").write_text(build_index(posts), encoding="utf-8")
     for p in posts:
         (OUT / "posts" / f"{p['slug']}.html").write_text(build_post(p, posts), encoding="utf-8")

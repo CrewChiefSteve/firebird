@@ -1,7 +1,7 @@
 {
   "title": "Project Firebird",
   "tagline": "One Pontiac Firebird, one birthday, two guys in a shop.",
-  "site_url": "https://crewchiefsteve.github.io/firebird",
+  "site_url": "https://firebird.crewchiefsteve.com",
   "hero_photo": "photos/2026-09-14/shell-in-primer.jpg",
   "milestones": [
     { "id": "rolling", "label": "Rolling chassis", "date": "2026-09-28" },

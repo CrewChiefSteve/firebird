@@ -3,7 +3,7 @@
 Putting a Pontiac Firebird back together so Joe Cobb can drive it on his birthday, February 14, 2027.
 Crew: Steve and Nick.
 
-**Public build log:** https://crewchiefsteve.github.io/firebird
+**Public build log:** https://firebird.crewchiefsteve.com
 **Private shop board** (time clock, sprint tasks, parts list): https://claude.ai/artifact/49VWa7BYG1Kg4Gy2aruRJw
 
 ## Layout
