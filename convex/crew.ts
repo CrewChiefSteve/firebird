@@ -34,3 +34,19 @@ export const setFlags = internalMutation({
     return { ...row, ...patch };
   },
 });
+
+/** Admin knob: move a crew member to a new sign-in email.
+ *  npx convex run --prod crew:setEmail '{"short":"jen","email":"new@example.com"}'
+ */
+export const setEmail = internalMutation({
+  args: { short: v.string(), email: v.string() },
+  handler: async (ctx, { short, email }) => {
+    const row = await ctx.db.query("crew").withIndex("by_short", (q) => q.eq("short", short)).unique();
+    if (!row) throw new Error(`No crew row for ${short}`);
+    const clean = email.trim().toLowerCase();
+    const taken = await ctx.db.query("crew").withIndex("by_email", (q) => q.eq("email", clean)).unique();
+    if (taken && taken._id !== row._id) throw new Error(`${clean} already belongs to ${taken.name}`);
+    await ctx.db.patch(row._id, { email: clean });
+    return { name: row.name, was: row.email, now: clean };
+  },
+});
