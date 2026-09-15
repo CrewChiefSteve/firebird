@@ -28,7 +28,7 @@ export function Shop() {
   if (!me.crew) {
     return (
       <div className="shop-gate">
-        <h1>Firebird <span>Shop Board</span></h1>
+        <h1>Trans Am <span>Shop Board</span></h1>
         <p>You&rsquo;re signed in as <b>{me.email ?? user?.primaryEmailAddress?.emailAddress}</b>, but that address isn&rsquo;t on the crew list.</p>
         <p className="muted">Ask Steve to add you, then sign in again.</p>
         <div className="row"><SignOutButton><button className="btn">Sign out</button></SignOutButton><Link className="btn" href="/">Public site</Link></div>
@@ -42,7 +42,7 @@ export function Shop() {
     <div className="shop">
       <div className="top">
         <div>
-          <h1>Firebird <span>Shop Board</span></h1>
+          <h1>Trans Am <span>Shop Board</span></h1>
           <div className="sub">Signed in as {crew.name} · <SignOutButton><button className="linkbtn">sign out</button></SignOutButton> · <Link href="/">public site</Link></div>
         </div>
         <nav className="tabs">
