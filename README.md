@@ -1,6 +1,6 @@
-# Project Firebird
+# Project Trans Am
 
-Putting a Pontiac Firebird back together so Joe Cobb can drive it on his birthday, February 14, 2027.
+Putting a Pontiac Trans Am back together so Joe Cobb can drive it on his birthday, February 14, 2027.
 It was Jennifer Jo Cobb's first car. Crew: Jennifer, Steve, and Nick.
 
 - **Public site:** https://firebird.crewchiefsteve.com (story, progress, build log)

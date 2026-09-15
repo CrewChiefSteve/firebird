@@ -18,10 +18,10 @@ export default async function Home() {
       <Nav />
       <div className="wrap">
         <div className="hero">
-          <img src={PROJECT.heroPhoto} alt="The Firebird shell on its dolly in the shop" />
+          <img src={PROJECT.heroPhoto} alt="The Trans Am shell on its dolly in the shop" />
           <div className="in">
             <div className="label">A birthday build · Kansas City</div>
-            <h1>Joe&rsquo;s <span>Firebird</span></h1>
+            <h1>Joe&rsquo;s <span>Trans Am</span></h1>
             <p>{PROJECT.tagline} Jennifer Jo Cobb&rsquo;s first car is going back together so her dad Joe can drive it on his birthday. Follow along.</p>
           </div>
         </div>
@@ -32,7 +32,7 @@ export default async function Home() {
         <div className="sec-h"><h2>Why this car</h2><span className="label">The story</span></div>
         <div className="story">
           <div>
-            <p>Before it was a project car, this Pontiac was Jennifer Jo Cobb&rsquo;s first car. Long before the race trucks and the team with her name on the wall, this was the one in her driveway.</p>
+            <p>Before it was a project car, this Trans Am was Jennifer Jo Cobb&rsquo;s first car. Long before the race trucks and the team with her name on the wall, this was the one in her driveway.</p>
             <p>A few years ago it came apart down to the shell. Every panel off, every bracket bagged and tagged, the body sanded and shot in primer. Then it waited, the way project cars do.</p>
             <p>Now Jennifer wants to hand her dad the keys. Joe Cobb has spent a lifetime around race cars, and on February 14, 2027, his birthday, he gets this one. Jennifer, Steve, and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel.</p>
           </div>

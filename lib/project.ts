@@ -1,5 +1,5 @@
 export const PROJECT = {
-  title: "Project Firebird",
+  title: "Project Trans Am",
   tagline: "Her first car. His birthday. A crew of three.",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://firebird.crewchiefsteve.com",
   heroPhoto: "/photos/2026-09-14/shell-on-the-dolly.jpg",
