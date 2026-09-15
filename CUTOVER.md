@@ -1,7 +1,8 @@
 # Cutover checklist: GitHub Pages → Vercel, Clerk dev → production
 
-Everything below is already built. These are the only steps left, in order.
-Steps marked **(Steve)** need your logins. The rest is one command each.
+**Completed September 15, 2026.** Steps 1–4 are done: DNS verified, live
+keys in Vercel, app on the production Clerk instance, Google sign-in
+working, Steve clocked in on the live shop board. Kept for reference.
 
 ## 1. DNS records in Route 53, zone crewchiefsteve.com **(Steve)**
 
@@ -43,10 +44,10 @@ cd /c/firebird && vercel env rm NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY production --y
 The production instance already has the `convex` JWT template. Its issuer
 is https://clerk.crewchiefsteve.com.
 
-## 4. Google sign-in on production (optional) **(Steve)**
+## 4. Google sign-in on production **(Steve)** — done
 
-Clerk production instances need your own Google OAuth client. Email codes
-work without it. If you want the Google button: Google Cloud Console →
+Clerk production instances need your own Google OAuth client. Set up on
+September 15, 2026: Google Cloud Console →
 Credentials → OAuth client (Web) with redirect URI
 `https://clerk.crewchiefsteve.com/v1/oauth_callback`, then paste the client
 ID and secret into Clerk → Production → Configure → SSO connections → Google.
@@ -56,7 +57,7 @@ ID and secret into Clerk → Production → Configure → SSO connections → Go
 - The GitHub Pages site was removed from the repo and Pages turned off on
   September 15, 2026, once the A record was live.
 - The old Claude artifact shop board is superseded. Delete it from
-  claude.ai/code/artifacts or with `/artifacts` in the terminal.
+  claude.ai/code/artifacts or with `/artifacts` in the terminal. (Still open.)
 
 ## Already done
 
