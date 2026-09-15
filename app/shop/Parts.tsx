@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { SHOP_PHASES } from "@/lib/project";
 import { money } from "./util";
+import { Pledges } from "./Pledges";
 
 type Status = "need" | "ordered" | "received" | "installed";
 const empty = { name: "", phase: SHOP_PHASES[0], qty: "1", vendor: "", cost: "", pn: "", eta: "", status: "need" as Status, note: "" };
@@ -14,6 +15,7 @@ export function Parts() {
   const save = useMutation(api.parts.save);
   const advance = useMutation(api.parts.advance);
   const remove = useMutation(api.parts.remove);
+  const setPublic = useMutation(api.parts.setPublic);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<Id<"parts"> | null>(null);
   if (!parts) return <div className="shop-loading">Loading parts…</div>;
@@ -43,16 +45,18 @@ export function Parts() {
         <div className="stat hot"><div className="lbl">Parts outstanding</div><div className="val"><span className="num">{open.length}</span></div><div className="foot">{rows.filter((p) => p.status === "need").length} not ordered</div></div>
         <div className="stat"><div className="lbl">Open cost</div><div className="val"><span className="num">{money(openCost)}</span></div><div className="foot">{money(totalCost)} total listed</div></div>
       </section>
+      <Pledges />
       <section className="panel">
-        <header><h2>Parts &amp; Materials</h2><span className="hint">tap a status to advance it · tap a name to edit</span></header>
+        <header><h2>Parts &amp; Materials</h2><span className="hint">tap a status to advance it · tap a name to edit · Public puts it on the Adopt-a-part page</span></header>
         <div className="bd">
           <div className="tablewrap"><table className="parts">
-            <thead><tr><th>Part</th><th>Phase</th><th>Qty</th><th>Vendor</th><th>Cost</th><th>ETA</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Part</th><th title="Listed on the public Adopt-a-part page">Public</th><th>Phase</th><th>Qty</th><th>Vendor</th><th>Cost</th><th>ETA</th><th>Status</th><th></th></tr></thead>
             <tbody>
-              {rows.length === 0 && <tr><td colSpan={8} className="empty">No parts listed yet. Add the first one below.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={9} className="empty">No parts listed yet. Add the first one below.</td></tr>}
               {rows.map((p) => (
                 <tr key={p._id}>
-                  <td className="n"><a href="#pform" onClick={(e) => { e.preventDefault(); edit(p); }}>{p.name}</a>{(p.pn || p.note) && <small>{[p.pn, p.note].filter(Boolean).join(" · ")}</small>}</td>
+                  <td className="n"><a href="#pform" onClick={(e) => { e.preventDefault(); edit(p); }}>{p.name}</a>{(p.pn || p.note) && <small>{[p.pn, p.note].filter(Boolean).join(" · ")}</small>}{p.sponsor && <small style={{ color: "var(--gold)" }}>Sponsored by {p.sponsor.name}{p.sponsor.company ? ", " + p.sponsor.company : ""}</small>}</td>
+                  <td><input type="checkbox" checked={!!p.public} onChange={(e) => setPublic({ id: p._id, public: e.target.checked })} title="Show on the public page" /></td>
                   <td>{p.phase}</td><td className="num">{p.qty}</td><td>{p.vendor}</td>
                   <td className="num">{p.cost ? money(p.cost * p.qty) : ""}</td>
                   <td className="num">{p.eta}</td>

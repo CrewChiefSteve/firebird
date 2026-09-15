@@ -52,7 +52,31 @@ export default defineSchema({
     status: v.union(v.literal("need"), v.literal("ordered"), v.literal("received"), v.literal("installed")),
     note: v.string(),
     updated: v.number(),
+    public: v.optional(v.boolean()), // listed on the public Adopt-a-part page
+    sponsor: v.optional(
+      v.object({
+        name: v.string(),
+        company: v.optional(v.string()),
+        credit: v.union(v.literal("name"), v.literal("company"), v.literal("anon")),
+        pledgeId: v.optional(v.id("pledges")),
+      }),
+    ),
   }),
+
+  // Someone offering to cover a part. Jennifer confirms or declines from the Parts tab.
+  pledges: defineTable({
+    partId: v.id("parts"),
+    partName: v.string(),
+    name: v.string(),
+    email: v.string(),
+    company: v.optional(v.string()),
+    credit: v.union(v.literal("name"), v.literal("company"), v.literal("anon")),
+    how: v.union(v.literal("cost"), v.literal("ship")), // cover the cost, or buy it and ship it to the shop
+    message: v.string(),
+    status: v.union(v.literal("new"), v.literal("confirmed"), v.literal("declined")),
+    createdAt: v.number(),
+    decidedAt: v.optional(v.number()),
+  }).index("by_status", ["status"]).index("by_part", ["partId"]),
 
   phases: defineTable({
     key: v.string(),

@@ -153,3 +153,37 @@ footer .sp{flex:1}
 
 /* nav link to the private side */
 .nav a.shoplink{border:1px solid var(--line);border-radius:4px;padding:4px 10px}
+
+/* adopt a part */
+.adopt-call{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:var(--ink);color:var(--bg);border-radius:8px;padding:28px 32px}
+.adopt-call .label{color:#E8C877}
+.adopt-call h2{font-size:clamp(28px,4vw,44px);font-weight:800;text-transform:uppercase;line-height:1;margin:6px 0 10px}
+.adopt-call p{margin:0;max-width:60ch;color:#E5E1D8}
+.btn-big{font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:#E8C877;color:#1a1612;padding:14px 22px;border-radius:5px;text-decoration:none;white-space:nowrap}
+.adopt-intro{max-width:64ch;margin:28px 0 8px}
+.adopt-intro p{margin:0 0 1em;font-size:18px}
+.adopt-group{margin-top:28px}
+.adopt-group h3{font-family:var(--sans);font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin:0 0 8px;font-weight:600}
+.plist{display:grid;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper)}
+.plist .p{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.plist .p:last-child{border-bottom:0}
+.plist .p .nm{font-family:var(--sans);font-weight:600;font-size:16px}
+.plist .p .pn{font-family:var(--sans);font-size:12px;color:var(--muted)}
+.plist .p .cost{font-family:var(--mono);font-size:15px;white-space:nowrap}
+.plist .p .st{font-family:var(--sans);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:6px 12px;border-radius:999px;white-space:nowrap;display:inline-block}
+.plist .p .st.open{background:var(--ink);color:var(--bg);cursor:pointer;border:0}
+.plist .p .st.claimed{background:#E8C877;color:#1a1612}
+.plist .p .st.pending{background:var(--line);color:var(--muted)}
+.plist .p .st.done{background:#2f6b3a;color:#fff}
+.plist .p.on{opacity:.75}
+.pledge{margin-top:24px;background:var(--paper);border:1px solid var(--ink);border-radius:8px;padding:22px 24px;display:grid;gap:12px}
+.pledge h3{font-size:26px;text-transform:uppercase;font-weight:800;margin:0}
+.pledge .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pledge label{display:grid;gap:4px;font-family:var(--sans);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.pledge input,.pledge select,.pledge textarea{font-family:var(--sans);font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);text-transform:none;letter-spacing:0;font-weight:400}
+.pledge .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pledge .actions button{font-family:var(--sans);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:11px 16px;border-radius:4px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.pledge .actions button.quiet{background:transparent;color:var(--ink)}
+.pledge .fine{font-family:var(--sans);font-size:13px;color:var(--muted);margin:0}
+.pledge .ok{font-family:var(--sans);font-size:17px;margin:0}
+@media (max-width:700px){.adopt-call{grid-template-columns:1fr}.plist .p{grid-template-columns:1fr auto}.plist .p .cost{grid-column:2}.pledge .grid{grid-template-columns:1fr}}

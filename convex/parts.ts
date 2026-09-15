@@ -6,7 +6,38 @@ const status = v.union(v.literal("need"), v.literal("ordered"), v.literal("recei
 const fields = {
   name: v.string(), phase: v.string(), qty: v.number(), vendor: v.string(), cost: v.number(),
   pn: v.string(), eta: v.string(), status, note: v.string(),
+  public: v.optional(v.boolean()),
 };
+
+/** How a sponsor asked to be shown. */
+export function sponsorLabel(s: { name: string; company?: string; credit: "name" | "company" | "anon" }) {
+  if (s.credit === "anon") return "a friend of the family";
+  if (s.credit === "company" && s.company) return s.company;
+  return s.name;
+}
+
+/** Public: the parts the crew chose to list, with sponsor credit but no email or notes. */
+export const publicList = query({
+  args: {},
+  handler: async (ctx) => {
+    const all = await ctx.db.query("parts").collect();
+    const out = [];
+    for (const p of all) {
+      if (!p.public) continue;
+      const pending = p.sponsor ? false : !!(await ctx.db.query("pledges").withIndex("by_part", (q) => q.eq("partId", p._id)).filter((q) => q.eq(q.field("status"), "new")).first());
+      out.push({ _id: p._id, name: p.name, phase: p.phase, qty: p.qty, cost: p.cost, vendor: p.vendor, pn: p.pn, status: p.status, sponsor: p.sponsor ? sponsorLabel(p.sponsor) : null, pending });
+    }
+    return out;
+  },
+});
+
+export const setPublic = mutation({
+  args: { id: v.id("parts"), public: v.boolean() },
+  handler: async (ctx, { id, public: pub }) => {
+    await requireCrew(ctx);
+    await ctx.db.patch(id, { public: pub, updated: Date.now() });
+  },
+});
 
 export const list = query({
   args: {},

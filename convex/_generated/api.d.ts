@@ -13,6 +13,7 @@ import type * as crew from "../crew.js";
 import type * as lib from "../lib.js";
 import type * as parts from "../parts.js";
 import type * as phases from "../phases.js";
+import type * as pledges from "../pledges.js";
 import type * as posts from "../posts.js";
 import type * as receipts from "../receipts.js";
 import type * as seed from "../seed.js";
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   lib: typeof lib;
   parts: typeof parts;
   phases: typeof phases;
+  pledges: typeof pledges;
   posts: typeof posts;
   receipts: typeof receipts;
   seed: typeof seed;

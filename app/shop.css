@@ -181,3 +181,9 @@
 .shop .breakdown .row2:last-child{border-bottom:0}
 .shop .ledger-wrap{overflow-x:auto}
 @media (max-width:700px){.shop .breakdown{grid-template-columns:1fr}}
+
+/* pledges */
+.shop .pledge-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.shop .pledge-row .who{font-weight:600}
+.shop .pledge-row .m{font-size:12px;color:var(--muted)}
+.shop .pledge-row blockquote{margin:6px 0 0;padding-left:10px;border-left:3px solid var(--line);font-size:13px}

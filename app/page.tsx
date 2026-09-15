@@ -9,7 +9,10 @@ import { Share } from "./Share";
 export const revalidate = 60;
 
 export default async function Home() {
-  const [phases, posts] = await Promise.all([fetchQuery(api.phases.list), fetchQuery(api.posts.published)]);
+  const [phases, posts, parts] = await Promise.all([fetchQuery(api.phases.list), fetchQuery(api.posts.published), fetchQuery(api.parts.publicList)]);
+  const openParts = parts.filter((p) => !p.sponsor && !p.pending && p.status === "need");
+  const sponsors = Array.from(new Set(parts.map((p) => p.sponsor).filter((s): s is string => !!s)));
+  const thanks = [...sponsors, ...PROJECT.thanks];
   const phaseName = Object.fromEntries(phases.map((p) => [p.key, p.name]));
   const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
@@ -77,6 +80,19 @@ export default async function Home() {
         </div>
       </div></section>
 
+      {parts.length > 0 && (
+        <section id="adopt"><div className="wrap">
+          <div className="adopt-call">
+            <div>
+              <div className="label">Adopt a part</div>
+              <h2>{openParts.length > 0 ? `${openParts.length} part${openParts.length === 1 ? "" : "s"} still need${openParts.length === 1 ? "s" : ""} a sponsor` : "Every listed part has a sponsor"}</h2>
+              <p>Ball joints, bushings, tie rods. Real parts with real prices, going on the car in the next two weeks. Pick one and we&rsquo;ll put your name on it when it goes on.</p>
+            </div>
+            <Link className="btn-big" href="/parts">See the list &rarr;</Link>
+          </div>
+        </div></section>
+      )}
+
       <section id="log"><div className="wrap">
         <div className="sec-h"><h2>Build log</h2><span className="label">{posts.length} update{posts.length === 1 ? "" : "s"}</span></div>
         <div className="posts">
@@ -95,10 +111,10 @@ export default async function Home() {
         </div>
       </div></section>
 
-      {PROJECT.thanks.length > 0 && (
+      {thanks.length > 0 && (
         <section id="thanks"><div className="wrap">
-          <div className="sec-h"><h2>Wall of thanks</h2></div>
-          <div className="thanks">{PROJECT.thanks.map((t) => <span key={t}>{t}</span>)}</div>
+          <div className="sec-h"><h2>Built with help from</h2><span className="label">Part sponsors</span></div>
+          <div className="thanks">{thanks.map((t) => <span key={t}>{t}</span>)}</div>
         </div></section>
       )}
       <div className="wrap"><Share url={PROJECT.siteUrl + "/"} /></div>

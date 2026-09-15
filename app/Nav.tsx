@@ -12,6 +12,7 @@ export function Nav({ shop }: { shop?: boolean }) {
           <Link href="/#story">The story</Link>
           <Link href="/#progress">Progress</Link>
           <Link href="/#log">Build log</Link>
+          <Link href="/parts">Adopt a part</Link>
           <Link href="/shop" className="shoplink" title="Crew only">Shop</Link>
         </>
       )}
