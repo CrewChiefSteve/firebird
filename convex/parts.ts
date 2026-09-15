@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 
@@ -43,5 +43,29 @@ export const remove = mutation({
   handler: async (ctx, { id }) => {
     await requireCrew(ctx);
     await ctx.db.delete(id);
+  },
+});
+
+/** Admin knobs for the CLI. adminUpsert matches on name so re-running doesn't duplicate rows.
+ *  npx convex run --prod parts:adminList
+ *  npx convex run --prod parts:adminUpsert '{"rows":[{"name":"...","phase":"front","qty":2,"vendor":"Rock Auto","cost":21.79,"pn":"Moog K5208","eta":"","status":"need","note":""}]}'
+ */
+export const adminList = internalQuery({
+  args: {},
+  handler: async (ctx) => await ctx.db.query("parts").collect(),
+});
+
+export const adminUpsert = internalMutation({
+  args: { rows: v.array(v.object(fields)) },
+  handler: async (ctx, { rows }) => {
+    const existing = await ctx.db.query("parts").collect();
+    const out: string[] = [];
+    for (const r of rows) {
+      const name = r.name.trim();
+      const hit = existing.find((p) => p.name.toLowerCase() === name.toLowerCase());
+      if (hit) { await ctx.db.patch(hit._id, { ...r, name, updated: Date.now() }); out.push("updated " + name); }
+      else { await ctx.db.insert("parts", { ...r, name, updated: Date.now() }); out.push("added " + name); }
+    }
+    return out;
   },
 });
