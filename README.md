@@ -4,7 +4,7 @@ Putting a Pontiac Trans Am back together so Joe Cobb can drive it on his 80th bi
 It was Jennifer Jo Cobb's first car. Crew: Jennifer, Steve, and Nick.
 
 - **Public site:** https://firebird.crewchiefsteve.com (story, progress, build log)
-- **Shop board:** https://firebird.crewchiefsteve.com/shop (crew sign-in; time clock, sprint, parts, post editor, payroll)
+- **Shop board:** https://firebird.crewchiefsteve.com/shop (crew sign-in; time clock, sprint, parts, ledger, post editor, payroll)
 
 ## Stack
 
@@ -40,7 +40,7 @@ vercel deploy --prod --yes            # app to production
 |---|---|---|
 | Steve | yes | no (sees the tab) |
 | Nick | yes | no (sees the tab) |
-| Jennifer | no | yes |
+| Jennifer | no | yes (also marks ledger receipts reimbursed) |
 
 Anyone on the crew can punch anyone who clocks in, add hours by hand, edit tasks, parts, and posts, and move the public progress bars.
 
@@ -48,7 +48,7 @@ Anyone on the crew can punch anyone who clocks in, add hours by hand, edit tasks
 
 ```
 app/                Next.js pages: / (public), /log/[slug], /shop, /sign-in
-app/shop/           shop board tabs (Clock, Board, Parts, Posts, Payroll)
+app/shop/           shop board tabs (Clock, Board, Parts, Ledger, Posts, Payroll)
 convex/             schema, functions, seed
 lib/project.ts      story copy, people, gallery, milestones (edit here)
 public/photos/      original web-sized photos

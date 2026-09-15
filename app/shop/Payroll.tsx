@@ -34,7 +34,7 @@ export function Payroll({ canPay }: { canPay: boolean }) {
               <div className="pay" key={c.short} style={{ ["--pc" as string]: c.color }}>
                 <div className="who">{c.name}</div>
                 <div className="big"><span className="num">{fmtH(unpaidMin)}</span> <small>hrs unpaid</small></div>
-                <div className="m">{fmtH(paidMin)} hrs already paid · {mine.length} entries{owed > 0 && <> · <b>{money(owed)} in receipts</b> on the Receipts tab</>}</div>
+                <div className="m">{fmtH(paidMin)} hrs already paid · {mine.length} entries{owed > 0 && <> · <b>{money(owed)} in receipts</b> on the Ledger tab</>}</div>
                 {canPay && <button className="btn primary" disabled={unpaidMin === 0} onClick={async () => {
                   if (!confirm(`Mark all of ${c.name}'s unpaid hours through ${through} as paid?`)) return;
                   const n = await markPaid({ who: c.short, through });

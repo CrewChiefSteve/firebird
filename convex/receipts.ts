@@ -2,13 +2,13 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 
-/** Crew: every receipt, newest first, with a signed URL for the scan. */
+/** Crew: every ledger row, newest first, with a signed URL for the scan when there is one. */
 export const list = query({
   args: {},
   handler: async (ctx) => {
     await requireCrew(ctx);
     const rows = await ctx.db.query("receipts").withIndex("by_date").order("desc").collect();
-    return await Promise.all(rows.map(async (r) => ({ ...r, url: await ctx.storage.getUrl(r.storageId) })));
+    return await Promise.all(rows.map(async (r) => ({ ...r, url: r.storageId ? await ctx.storage.getUrl(r.storageId) : null })));
   },
 });
 
@@ -28,25 +28,32 @@ export const add = mutation({
     total: v.number(),
     phase: v.string(),
     note: v.string(),
-    storageId: v.id("_storage"),
-    kind: v.union(v.literal("image"), v.literal("pdf")),
+    storageId: v.optional(v.id("_storage")),
+    kind: v.optional(v.union(v.literal("image"), v.literal("pdf"))),
   },
   handler: async (ctx, args) => {
     await requireCrew(ctx);
     if (!(args.total > 0)) throw new Error("Total must be more than zero");
-    return await ctx.db.insert("receipts", { ...args, vendor: args.vendor.trim(), note: args.note.trim(), reimbursed: false, createdAt: Date.now() });
+    // Money the payer spent herself is not owed to anyone, so it enters the book already settled.
+    const payer = await ctx.db.query("crew").withIndex("by_short", (q) => q.eq("short", args.who)).unique();
+    const settled = !!payer?.canPay;
+    const now = Date.now();
+    return await ctx.db.insert("receipts", {
+      ...args, vendor: args.vendor.trim(), note: args.note.trim(),
+      reimbursed: settled, ...(settled ? { reimbursedAt: now } : {}), createdAt: now,
+    });
   },
 });
 
-/** Anyone on the crew can pull a receipt back as long as it hasn't been reimbursed. */
+/** Crew can delete an unreimbursed row; the payer can delete anything (her own rows enter as settled). */
 export const remove = mutation({
   args: { id: v.id("receipts") },
   handler: async (ctx, { id }) => {
-    await requireCrew(ctx);
+    const me = await requireCrew(ctx);
     const r = await ctx.db.get(id);
     if (!r) return;
-    if (r.reimbursed) throw new Error("Already reimbursed; can't delete");
-    await ctx.storage.delete(r.storageId);
+    if (r.reimbursed && !me.canPay) throw new Error("Already reimbursed; ask Jennifer to remove it");
+    if (r.storageId) await ctx.storage.delete(r.storageId);
     await ctx.db.delete(id);
   },
 });

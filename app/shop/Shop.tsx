@@ -9,13 +9,13 @@ import { Board } from "./Board";
 import { Parts } from "./Parts";
 import { Posts } from "./Posts";
 import { Payroll } from "./Payroll";
-import { Receipts } from "./Receipts";
+import { Ledger } from "./Ledger";
 
 const TABS = [
   ["clock", "Time clock"],
   ["board", "Sprint"],
   ["parts", "Parts"],
-  ["receipts", "Receipts"],
+  ["ledger", "Ledger"],
   ["posts", "Build log"],
   ["payroll", "Payroll"],
 ] as const;
@@ -56,7 +56,7 @@ export function Shop() {
         {tab === "clock" && <Clock />}
         {tab === "board" && <Board />}
         {tab === "parts" && <Parts />}
-        {tab === "receipts" && <Receipts me={crew.short} canPay={crew.canPay} />}
+        {tab === "ledger" && <Ledger me={crew.short} canPay={crew.canPay} />}
         {tab === "posts" && <Posts />}
         {tab === "payroll" && <Payroll canPay={crew.canPay} />}
       </div>

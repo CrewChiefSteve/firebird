@@ -82,7 +82,8 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_slug", ["slug"]).index("by_date", ["date"]),
 
-  // Out-of-pocket purchases waiting on reimbursement from Jennifer.
+  // The ledger: every dollar spent on the car. Crew out-of-pocket rows wait on reimbursement
+  // from Jennifer; rows she paid herself are settled on entry.
   receipts: defineTable({
     who: v.string(), // crew.short of whoever paid
     date: v.string(), // YYYY-MM-DD on the receipt
@@ -90,8 +91,8 @@ export default defineSchema({
     total: v.number(), // dollars
     phase: v.string(), // phases.key or "other"
     note: v.string(),
-    storageId: v.id("_storage"),
-    kind: v.union(v.literal("image"), v.literal("pdf")),
+    storageId: v.optional(v.id("_storage")), // the receipt scan, if there is one
+    kind: v.optional(v.union(v.literal("image"), v.literal("pdf"))),
     reimbursed: v.boolean(),
     reimbursedAt: v.optional(v.number()),
     createdAt: v.number(),

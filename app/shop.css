@@ -159,3 +159,25 @@
 .shop .rcpt .scan img{width:100%;height:100%;object-fit:cover}
 .shop .rcpt .pt{font-weight:600}
 .shop .rcpt .pt .num{margin-left:8px}
+
+/* ledger */
+.shop .ledger-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.shop .ledger-stats .st{border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.shop .ledger-stats .st .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.shop .ledger-stats .st .v{font-family:var(--disp2);font-size:26px;font-weight:700;line-height:1.1}
+.shop .ledger-stats .st.gold{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.shop .ledger-stats .st .m{font-size:12px;color:var(--muted)}
+.shop table.ledger{width:100%;border-collapse:collapse;font-size:13px}
+.shop table.ledger th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
+.shop table.ledger td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.shop table.ledger tr:hover td{background:var(--surface2)}
+.shop table.ledger td.num,.shop table.ledger th.num{text-align:right;white-space:nowrap}
+.shop table.ledger td.run{color:var(--muted)}
+.shop table.ledger .m{color:var(--muted);font-size:12px}
+.shop table.ledger .scan{display:inline-block;width:28px;height:28px;border-radius:3px;overflow:hidden;background:var(--line);vertical-align:middle;font-family:var(--mono);font-size:9px;text-align:center;line-height:28px;color:var(--muted);text-decoration:none}
+.shop table.ledger .scan img{width:100%;height:100%;object-fit:cover;display:block}
+.shop .breakdown{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop .breakdown .row2{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px}
+.shop .breakdown .row2:last-child{border-bottom:0}
+.shop .ledger-wrap{overflow-x:auto}
+@media (max-width:700px){.shop .breakdown{grid-template-columns:1fr}}
