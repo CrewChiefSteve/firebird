@@ -20,9 +20,9 @@ export default async function Home() {
         <div className="hero">
           <img src={PROJECT.heroPhoto} alt="The Trans Am shell on its dolly in the shop" />
           <div className="in">
-            <div className="label">A birthday build · Kansas City</div>
+            <div className="label">An 80th birthday build</div>
             <h1>Joe&rsquo;s <span>Trans Am</span></h1>
-            <p>{PROJECT.tagline} Jennifer Jo Cobb&rsquo;s first car is going back together so her dad Joe can drive it on his birthday. Follow along.</p>
+            <p>{PROJECT.tagline} Jennifer Jo Cobb&rsquo;s first car is going back together so her dad Joe can drive it on his 80th birthday. Follow along.</p>
           </div>
         </div>
       </div>
@@ -32,9 +32,11 @@ export default async function Home() {
         <div className="sec-h"><h2>Why this car</h2><span className="label">The story</span></div>
         <div className="story">
           <div>
-            <p>Before it was a project car, this Trans Am was Jennifer Jo Cobb&rsquo;s first car. Long before the race trucks and the team with her name on the wall, this was the one in her driveway.</p>
-            <p>A few years ago it came apart down to the shell. Every panel off, every bracket bagged and tagged, the body sanded and shot in primer. Then it waited, the way project cars do.</p>
-            <p>Now Jennifer wants to hand her dad the keys. Joe Cobb has spent a lifetime around race cars, and on February 14, 2027, his birthday, he gets this one. Jennifer, Steve, and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel.</p>
+            <p>Joe Cobb bought this Trans Am for his wife, Connie, from a retired Kansas City, Kansas police detective. Every morning he&rsquo;d drop Connie at the assembly plant, and the second she was through the doors, six-year-old Jennifer climbed onto his lap and drove herself to elementary school. Joe&rsquo;s hands were right there on the wheel with hers. Mostly.</p>
+            <p>By the time her sixteenth birthday came around the transmission had let go and the car sat behind the house. But a set of brand-new gold-on-chrome Cragar wheels had been waiting in a closet all those years, and Jennifer asked for the TA. For a working family led by a mechanic, that was a do-able request. The deal: Joe and Connie would get it running, and she&rsquo;d buy the tires. So she got a job at Western Auto and, with her employee discount, bought one tire with each of her first four paychecks.</p>
+            <p>She couldn&rsquo;t help showing it off. Friday nights at the local hot spot, and her first competition in anything with four wheels, the High School Drags at KCI Dragstrip. She and her dad kept brainstorming ways to make it faster, and the big block they dropped in, with the A/C compressor pulled in the name of speed, was eventually too much car for the drive to the University of Kansas. She bought something economical, and the Trans Am went back behind the Cobb house for decades.</p>
+            <p>That&rsquo;s where Crew Chief Steve came in. As Jennifer&rsquo;s NASCAR career took off she couldn&rsquo;t stop talking about that car, so Steve said: let&rsquo;s bring it back to North Carolina. It rode east on the JJCR hauler, with Joe feeling very mixed about his daughter&rsquo;s car going so far from home. Every year on Jennifer&rsquo;s birthday the team put a little time into it. Every panel came off, every bracket got bagged and tagged, and the body went into primer. Then it waited, the way project cars do.</p>
+            <p>Now the waiting is over. Joe turns 80 on February 14, 2027, and Jennifer wants to hand him the keys. Jennifer, Steve, and Nick are working it in phases, on the clock, and posting everything here as it happens. First goal: a rolling chassis in two weeks. Last goal: Joe behind the wheel of the car he bought for Connie.</p>
           </div>
           <div className="people">
             {PROJECT.people.map((pp) => (

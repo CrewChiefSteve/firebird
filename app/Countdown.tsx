@@ -21,7 +21,7 @@ export function Countdown() {
       <div className="c gold">
         <div className="n num"><Days iso={birthday.date} /></div>
         <div className="t">days until Joe drives it</div>
-        <div className="d">{niceDate(birthday.date)} · his birthday</div>
+        <div className="d">{niceDate(birthday.date)} · his 80th birthday</div>
       </div>
     </div>
   );
