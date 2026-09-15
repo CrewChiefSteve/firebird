@@ -81,4 +81,19 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_slug", ["slug"]).index("by_date", ["date"]),
+
+  // Out-of-pocket purchases waiting on reimbursement from Jennifer.
+  receipts: defineTable({
+    who: v.string(), // crew.short of whoever paid
+    date: v.string(), // YYYY-MM-DD on the receipt
+    vendor: v.string(),
+    total: v.number(), // dollars
+    phase: v.string(), // phases.key or "other"
+    note: v.string(),
+    storageId: v.id("_storage"),
+    kind: v.union(v.literal("image"), v.literal("pdf")),
+    reimbursed: v.boolean(),
+    reimbursedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_who", ["who", "date"]).index("by_date", ["date"]),
 });

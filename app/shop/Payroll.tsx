@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { fmtClock, fmtDate, fmtH, todayIso } from "./util";
+import { fmtClock, fmtDate, fmtH, money, todayIso } from "./util";
 
 /** Unpaid hours per person. Everyone can look; only the payer (Jennifer) can mark hours paid. */
 export function Payroll({ canPay }: { canPay: boolean }) {
   const board = useQuery(api.clock.board);
+  const receipts = useQuery(api.receipts.list);
   const markPaid = useMutation(api.clock.markPaid);
   const [through, setThrough] = useState(todayIso());
   const [msg, setMsg] = useState("");
@@ -28,11 +29,12 @@ export function Payroll({ canPay }: { canPay: boolean }) {
             const unpaid = mine.filter((s) => !s.paid);
             const unpaidMin = unpaid.reduce((a, s) => a + s.minutes, 0);
             const paidMin = mine.filter((s) => s.paid).reduce((a, s) => a + s.minutes, 0);
+            const owed = (receipts ?? []).filter((r) => r.who === c.short && !r.reimbursed).reduce((a, r) => a + r.total, 0);
             return (
               <div className="pay" key={c.short} style={{ ["--pc" as string]: c.color }}>
                 <div className="who">{c.name}</div>
                 <div className="big"><span className="num">{fmtH(unpaidMin)}</span> <small>hrs unpaid</small></div>
-                <div className="m">{fmtH(paidMin)} hrs already paid · {mine.length} entries</div>
+                <div className="m">{fmtH(paidMin)} hrs already paid · {mine.length} entries{owed > 0 && <> · <b>{money(owed)} in receipts</b> on the Receipts tab</>}</div>
                 {canPay && <button className="btn primary" disabled={unpaidMin === 0} onClick={async () => {
                   if (!confirm(`Mark all of ${c.name}'s unpaid hours through ${through} as paid?`)) return;
                   const n = await markPaid({ who: c.short, through });
