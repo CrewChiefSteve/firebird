@@ -1,4 +1,5 @@
-import { query } from "./_generated/server";
+import { query, internalMutation } from "./_generated/server";
+import { v } from "convex/values";
 import { currentCrew } from "./lib";
 
 export const me = query({
@@ -15,5 +16,21 @@ export const list = query({
   handler: async (ctx) => {
     const all = await ctx.db.query("crew").collect();
     return all.sort((a, b) => a.order - b.order).map(({ email: _e, ...rest }) => rest);
+  },
+});
+
+/** Admin knob, run from the CLI:
+ *  npx convex run --prod crew:setFlags '{"email":"jen@cobbracingteam.com","canPay":true}'
+ */
+export const setFlags = internalMutation({
+  args: { email: v.string(), canClock: v.optional(v.boolean()), canPay: v.optional(v.boolean()) },
+  handler: async (ctx, { email, canClock, canPay }) => {
+    const row = await ctx.db.query("crew").withIndex("by_email", (q) => q.eq("email", email.toLowerCase())).unique();
+    if (!row) throw new Error(`No crew row for ${email}`);
+    const patch: { canClock?: boolean; canPay?: boolean } = {};
+    if (canClock !== undefined) patch.canClock = canClock;
+    if (canPay !== undefined) patch.canPay = canPay;
+    await ctx.db.patch(row._id, patch);
+    return { ...row, ...patch };
   },
 });
