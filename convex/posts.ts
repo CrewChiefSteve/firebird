@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 import { Doc } from "./_generated/dataModel";
@@ -91,5 +91,20 @@ export const remove = mutation({
     if (!p) return;
     for (const ph of p.photos) if (ph.storageId) await ctx.storage.delete(ph.storageId);
     await ctx.db.delete(id);
+  },
+});
+
+/** Admin knob: edit a post's text from the CLI without touching its photos.
+ *  npx convex run --prod posts:patchText '{"slug":"2026-09-15-...","summary":"..."}'
+ */
+export const patchText = internalMutation({
+  args: { slug: v.string(), title: v.optional(v.string()), summary: v.optional(v.string()), body: v.optional(v.string()) },
+  handler: async (ctx, { slug, ...fields }) => {
+    const p = await ctx.db.query("posts").withIndex("by_slug", (q) => q.eq("slug", slug)).unique();
+    if (!p) throw new Error(`No post ${slug}`);
+    const patch: { title?: string; summary?: string; body?: string } = {};
+    for (const [k, val] of Object.entries(fields)) if (val !== undefined) patch[k as keyof typeof patch] = val;
+    await ctx.db.patch(p._id, { ...patch, updatedAt: Date.now() });
+    return { slug, ...patch };
   },
 });
