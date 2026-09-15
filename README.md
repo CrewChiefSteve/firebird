@@ -52,5 +52,4 @@ app/shop/           shop board tabs (Clock, Board, Parts, Posts, Payroll)
 convex/             schema, functions, seed
 lib/project.ts      story copy, people, gallery, milestones (edit here)
 public/photos/      original web-sized photos
-content/, docs/, build.py, site/   the old static site, kept until the domain flips to Vercel
 ```

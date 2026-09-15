@@ -53,9 +53,8 @@ ID and secret into Clerk → Production → Configure → SSO connections → Go
 
 ## 5. Retire the old pieces
 
-- The GitHub Pages site (`docs/`, `content/`, `build.py`, `site/`) can be
-  deleted from the repo after the A record is live. Pages can be turned off
-  in the repo settings.
+- The GitHub Pages site was removed from the repo and Pages turned off on
+  September 15, 2026, once the A record was live.
 - The old Claude artifact shop board is superseded. Delete it from
   claude.ai/code/artifacts or with `/artifacts` in the terminal.
 
