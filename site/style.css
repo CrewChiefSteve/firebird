@@ -69,6 +69,13 @@ section{padding:56px 0 0}
 .person .rl{font-family:var(--sans);font-size:12px;color:var(--oxide);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .person .bl{font-size:15px;color:var(--ink-2);margin-top:4px;line-height:1.4}
 
+/* family strip */
+.family{margin-top:36px;display:grid;gap:12px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.strip figure{margin:0;display:grid;gap:6px}
+.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#000}
+.strip figcaption{font-family:var(--sans);font-size:13px;color:var(--muted)}
+
 /* phases */
 .phases{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:0;position:relative}
 .phases::before{content:"";position:absolute;left:0;right:0;top:14px;height:4px;background:var(--line);z-index:0}
@@ -129,6 +136,7 @@ footer .sp{flex:1}
   .count{grid-template-columns:1fr;margin-top:-18px}
   .count .c .n{font-size:52px}
   .story{grid-template-columns:1fr}
+  .strip{grid-template-columns:1fr}
   .post{grid-template-columns:1fr}
   .post .tx{padding:18px 20px 22px}
   .sec-h h2{font-size:36px}

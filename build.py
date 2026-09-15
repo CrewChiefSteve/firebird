@@ -165,6 +165,8 @@ def build_index(posts):
   </div>
 </article>""" for p in posts) or '<p class="empty">First update coming soon.</p>'
 
+    gal_items = "".join(f'<figure><img src="{g["photo"]}" alt="{E(g["caption"])}"><figcaption>{E(g["caption"])}</figcaption></figure>' for g in PROJECT.get("gallery", []))
+    gallery = f'<div class="family"><div class="label">The racing family</div><div class="strip">{gal_items}</div></div>' if gal_items else ""
     thanks = "".join(f"<span>{E(t)}</span>" for t in PROJECT.get("thanks", []))
     thanks_sec = f"""<section id="thanks"><div class="wrap"><div class="sec-h"><h2>Wall of thanks</h2></div><div class="thanks">{thanks}</div></div></section>""" if thanks else ""
 
@@ -191,6 +193,7 @@ def build_index(posts):
     </div>
     <div class="people">{people}</div>
   </div>
+  {gallery}
 </div></section>
 
 <section id="progress"><div class="wrap">

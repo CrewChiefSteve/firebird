@@ -97,5 +97,19 @@
       "blurb": "Jennifer Jo Cobb, NASCAR driver and founder of Driven2Honor, whose first car this was. Steve, who took it apart years ago. Nick, who's helping put it back. All three of them turn wrenches, and Jennifer isn't afraid to get her hands dirty."
     }
   ],
-  "thanks": []
+  "thanks": [],
+  "gallery": [
+    {
+      "photo": "photos/people/joe-and-jennifer-kleenex.jpg",
+      "caption": "Joe and Jennifer, both in firesuits, at the track."
+    },
+    {
+      "photo": "photos/people/jennifer-pit-road.jpg",
+      "caption": "Jennifer on pit road."
+    },
+    {
+      "photo": "photos/people/joe-and-jennifer.jpg",
+      "caption": "Joe and Jennifer under the lights."
+    }
+  ]
 }
