@@ -38,8 +38,8 @@ vercel deploy --prod --yes            # app to production
 
 | Person | Clocks in | Marks hours paid |
 |---|---|---|
-| Steve | yes | no |
-| Nick | yes | no |
+| Steve | yes | no (sees the tab) |
+| Nick | yes | no (sees the tab) |
 | Jennifer | no | yes |
 
 Anyone on the crew can punch anyone who clocks in, add hours by hand, edit tasks, parts, and posts, and move the public progress bars.

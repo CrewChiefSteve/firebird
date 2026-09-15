@@ -4,8 +4,8 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { fmtClock, fmtDate, fmtH, todayIso } from "./util";
 
-/** Jennifer's view: unpaid hours per person, mark paid through a date. */
-export function Payroll() {
+/** Unpaid hours per person. Everyone can look; only the payer (Jennifer) can mark hours paid. */
+export function Payroll({ canPay }: { canPay: boolean }) {
   const board = useQuery(api.clock.board);
   const markPaid = useMutation(api.clock.markPaid);
   const [through, setThrough] = useState(todayIso());
@@ -16,12 +16,12 @@ export function Payroll() {
 
   return (
     <section className="panel">
-      <header><h2>Payroll</h2><span className="hint">unpaid hours by person · mark paid through a date</span></header>
+      <header><h2>Payroll</h2><span className="hint">{canPay ? "unpaid hours by person · mark paid through a date" : "unpaid hours by person · Jennifer marks these paid"}</span></header>
       <div className="bd">
-        <div className="row">
+        {canPay && <div className="row">
           <label className="f">Paid through<input type="date" value={through} onChange={(e) => setThrough(e.target.value)} /></label>
           <span className="hint" style={{ alignSelf: "end" }}>{msg}</span>
-        </div>
+        </div>}
         <div className="pay-grid">
           {clockers.map((c) => {
             const mine = sessions.filter((s) => s.who === c.short);
@@ -33,11 +33,11 @@ export function Payroll() {
                 <div className="who">{c.name}</div>
                 <div className="big"><span className="num">{fmtH(unpaidMin)}</span> <small>hrs unpaid</small></div>
                 <div className="m">{fmtH(paidMin)} hrs already paid · {mine.length} entries</div>
-                <button className="btn primary" disabled={unpaidMin === 0} onClick={async () => {
+                {canPay && <button className="btn primary" disabled={unpaidMin === 0} onClick={async () => {
                   if (!confirm(`Mark all of ${c.name}'s unpaid hours through ${through} as paid?`)) return;
                   const n = await markPaid({ who: c.short, through });
                   setMsg(`Marked ${n} ${c.name} entr${n === 1 ? "y" : "ies"} paid.`);
-                }}>Mark paid through {through}</button>
+                }}>Mark paid through {through}</button>}
                 <div className="log" style={{ marginTop: 10 }}>
                   {unpaid.length === 0 && <div className="empty">Nothing outstanding.</div>}
                   {unpaid.map((s) => (

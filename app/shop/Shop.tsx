@@ -36,7 +36,6 @@ export function Shop() {
     );
   }
   const crew = me.crew;
-  const tabs = TABS.filter(([k]) => k !== "payroll" || crew.canPay);
 
   return (
     <div className="shop">
@@ -46,7 +45,7 @@ export function Shop() {
           <div className="sub">Signed in as {crew.name} · <SignOutButton><button className="linkbtn">sign out</button></SignOutButton> · <Link href="/">public site</Link></div>
         </div>
         <nav className="tabs">
-          {tabs.map(([k, label]) => (
+          {TABS.map(([k, label]) => (
             <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{label}</button>
           ))}
         </nav>
@@ -56,7 +55,7 @@ export function Shop() {
         {tab === "board" && <Board />}
         {tab === "parts" && <Parts />}
         {tab === "posts" && <Posts />}
-        {tab === "payroll" && crew.canPay && <Payroll />}
+        {tab === "payroll" && <Payroll canPay={crew.canPay} />}
       </div>
     </div>
   );
