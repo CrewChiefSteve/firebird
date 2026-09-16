@@ -69,6 +69,8 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
   for (const r of rows) byWho[r.who] = (byWho[r.who] ?? 0) + r.total;
   const stillToBuy = parts.filter((p) => p.status === "need" || p.status === "hot").reduce((a, p) => a + p.cost * p.qty, 0);
   const onOrder = parts.filter((p) => p.status === "ordered").reduce((a, p) => a + p.cost * p.qty, 0);
+  const hotParts = parts.filter((p) => p.status === "hot");
+  const hotCost = hotParts.reduce((a, p) => a + p.cost * p.qty, 0);
   const month = todayIso().slice(0, 7);
   const thisMonth = rows.filter((r) => r.date.startsWith(month)).reduce((a, r) => a + r.total, 0);
 
@@ -119,6 +121,7 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
         <div className="st gold"><div className="l">Spent on the car</div><div className="v num">{money(total)}</div><div className="m">{rows.length} entr{rows.length === 1 ? "y" : "ies"}</div></div>
         <div className="st"><div className="l">This month</div><div className="v num">{money(thisMonth)}</div><div className="m">since the 1st</div></div>
         <div className="st"><div className="l">Owed to crew</div><div className="v num">{money(owedTotal)}</div><div className="m">{owedTotal === 0 ? "all square" : Object.entries(owed).map(([w, a]) => `${name(w)} ${money(a)}`).join(" · ")}</div></div>
+        <div className={`st${hotParts.length > 0 ? " hotlist" : ""}`}><div className="l">Hot list</div><div className="v num">{money(hotCost)}</div><div className="m">{hotParts.length === 0 ? "nothing marked hot" : `${hotParts.length} part${hotParts.length === 1 ? "" : "s"} needed now`}</div></div>
         <div className="st"><div className="l">Parts still to buy</div><div className="v num">{money(stillToBuy)}</div><div className="m">{onOrder > 0 ? `plus ${money(onOrder)} on order` : "from the Parts tab"}</div></div>
       </div>
 

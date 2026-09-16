@@ -207,3 +207,6 @@
 
 .shop .stat.hotlist{border-color:var(--crit);background:color-mix(in srgb,var(--crit) 8%,transparent)}
 .shop .stat.hotlist .num{color:var(--crit)}
+
+.shop .ledger-stats .st.hotlist{border-color:var(--crit);background:color-mix(in srgb,var(--crit) 8%,transparent)}
+.shop .ledger-stats .st.hotlist .v{color:var(--crit)}
