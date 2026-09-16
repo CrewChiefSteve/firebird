@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { ConvexError } from "convex/values";
 import { Id } from "@/convex/_generated/dataModel";
 import { money, todayIso } from "./util";
 
@@ -111,7 +112,7 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
       const missing = [!r.vendor && "vendor", r.total == null && "amount", !r.date && "date"].filter(Boolean);
       setMsg(missing.length > 0 ? `Read what it could. Fill in the ${missing.join(", ")}.` : r.reviewNeeded ? `Filled in. Double-check the numbers${r.notes ? ": " + r.notes : ""}.` : `Filled in from the receipt${paid ? ", paid by " + paid : ""}. Check it and hit Enter it.`);
     } catch (e) {
-      setMsg("Couldn't read it, type it in. " + (e as Error).message.replace(/^.*Uncaught Error: /, "").split("\n")[0]);
+      setMsg("Couldn't read it, type it in. " + (e instanceof ConvexError ? String(e.data) : ""));
     } finally { setReading(false); }
   }
 

@@ -1,6 +1,6 @@
 import { action, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { v, Infer } from "convex/values";
+import { v, Infer, ConvexError } from "convex/values";
 import { currentCrew } from "./lib";
 
 /**
@@ -85,14 +85,14 @@ export const read = action({
   returns: result,
   handler: async (ctx, { storageId }): Promise<Scan> => {
     const { crew, phases }: ScanCtx = await ctx.runQuery(internal.scan.ctxForScan, {});
-    if (!crew) throw new Error("Not on the crew list");
+    if (!crew) throw new ConvexError("Not on the crew list");
     const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) throw new Error("Receipt reading isn't set up yet. Jennifer or Steve: set OPENAI_API_KEY on the Convex deployment.");
+    if (!apiKey) throw new ConvexError("Receipt reading isn't set up yet. Jennifer or Steve: set OPENAI_API_KEY on the Convex deployment.");
 
     const blob = await ctx.storage.get(storageId);
-    if (!blob) throw new Error("That upload isn't in storage");
+    if (!blob) throw new ConvexError("That upload isn't in storage");
     const mime = blob.type || "image/jpeg";
-    if (!mime.startsWith("image/")) throw new Error("Only photos can be read automatically. Type this one in.");
+    if (!mime.startsWith("image/")) throw new ConvexError("Only photos can be read automatically. Type this one in.");
     const dataUrl = `data:${mime};base64,${toBase64(new Uint8Array(await blob.arrayBuffer()))}`;
 
     const phaseNames = [...phases.map((p) => p.name), "Other"];
@@ -108,11 +108,11 @@ export const read = action({
         text: { format: { type: "json_schema", name: "receipt", strict: true, schema: jsonSchema } },
       }),
     });
-    if (!res.ok) throw new Error(`Receipt reader failed (${res.status}): ${(await res.text()).slice(0, 200)}`);
+    if (!res.ok) throw new ConvexError(`Receipt reader failed (${res.status}): ${(await res.text()).slice(0, 200)}`);
     const body = await res.json();
     const raw: string | undefined = body.output_text
       ?? body.output?.flatMap((o: { content?: { type: string; text?: string }[] }) => o.content ?? []).find((c: { type: string }) => c.type === "output_text")?.text;
-    if (!raw) throw new Error("Receipt reader returned nothing");
+    if (!raw) throw new ConvexError("Receipt reader returned nothing");
     const j = JSON.parse(raw);
 
     // Map the phase name the model picked back to a phases.key ("other" for Other).
