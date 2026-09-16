@@ -36,7 +36,7 @@ export function Adopt({ groups }: { groups: { phase: string; parts: Part[] }[] }
     if (p.status === "installed") return <span className="st done">On the car</span>;
     if (p.sponsor) return <span className="st claimed">Sponsored by {p.sponsor}</span>;
     if (p.pending) return <span className="st pending">Spoken for</span>;
-    if (p.status !== "need") return <span className="st pending">Ordered</span>;
+    if (p.status !== "need" && p.status !== "hot") return <span className="st pending">Ordered</span>;
     return <button type="button" className="st open" onClick={() => pick(p)}>Sponsor this</button>;
   };
 
@@ -47,9 +47,9 @@ export function Adopt({ groups }: { groups: { phase: string; parts: Part[] }[] }
           <h3>{g.phase}</h3>
           <div className="plist">
             {g.parts.map((p) => (
-              <div className={`p${p.sponsor || p.status !== "need" ? " on" : ""}`} key={p._id}>
+              <div className={`p${p.sponsor || (p.status !== "need" && p.status !== "hot") ? " on" : ""}`} key={p._id}>
                 <div>
-                  <div className="nm">{p.name}{p.qty > 1 ? ` × ${p.qty}` : ""}</div>
+                  <div className="nm">{p.name}{p.qty > 1 ? ` × ${p.qty}` : ""}{p.status === "hot" && !p.sponsor && <span className="hotnow">needed now</span>}</div>
                   <div className="pn">{[p.pn, p.vendor].filter(Boolean).join(" · ")}</div>
                 </div>
                 <div className="cost">{p.cost > 0 ? money(p.cost * p.qty) : ""}</div>

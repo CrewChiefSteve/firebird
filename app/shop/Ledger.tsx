@@ -67,7 +67,7 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
   for (const r of rows) byPhase[r.phase] = (byPhase[r.phase] ?? 0) + r.total;
   const byWho: Record<string, number> = {};
   for (const r of rows) byWho[r.who] = (byWho[r.who] ?? 0) + r.total;
-  const stillToBuy = parts.filter((p) => p.status === "need").reduce((a, p) => a + p.cost * p.qty, 0);
+  const stillToBuy = parts.filter((p) => p.status === "need" || p.status === "hot").reduce((a, p) => a + p.cost * p.qty, 0);
   const onOrder = parts.filter((p) => p.status === "ordered").reduce((a, p) => a + p.cost * p.qty, 0);
   const month = todayIso().slice(0, 7);
   const thisMonth = rows.filter((r) => r.date.startsWith(month)).reduce((a, r) => a + r.total, 0);

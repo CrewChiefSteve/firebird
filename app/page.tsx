@@ -10,7 +10,7 @@ export const revalidate = 60;
 
 export default async function Home() {
   const [phases, posts, parts] = await Promise.all([fetchQuery(api.phases.list), fetchQuery(api.posts.published), fetchQuery(api.parts.publicList)]);
-  const openParts = parts.filter((p) => !p.sponsor && !p.pending && p.status === "need");
+  const openParts = parts.filter((p) => !p.sponsor && !p.pending && (p.status === "need" || p.status === "hot"));
   const sponsors = Array.from(new Set(parts.map((p) => p.sponsor).filter((s): s is string => !!s)));
   const thanks = [...sponsors, ...PROJECT.thanks];
   const phaseName = Object.fromEntries(phases.map((p) => [p.key, p.name]));

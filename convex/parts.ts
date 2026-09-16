@@ -2,7 +2,8 @@ import { internalMutation, internalQuery, mutation, query } from "./_generated/s
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 
-const status = v.union(v.literal("need"), v.literal("ordered"), v.literal("received"), v.literal("installed"));
+// hot = needed now, need = on the list, hold = parked (keeps the research, drops out of totals and the public page)
+const status = v.union(v.literal("hot"), v.literal("need"), v.literal("ordered"), v.literal("received"), v.literal("installed"), v.literal("hold"));
 const fields = {
   name: v.string(), phase: v.string(), qty: v.number(), vendor: v.string(), cost: v.number(),
   pn: v.string(), eta: v.string(), status, note: v.string(),
@@ -23,7 +24,7 @@ export const publicList = query({
     const all = await ctx.db.query("parts").collect();
     const out = [];
     for (const p of all) {
-      if (!p.public) continue;
+      if (!p.public || p.status === "hold") continue;
       const pending = p.sponsor ? false : !!(await ctx.db.query("pledges").withIndex("by_part", (q) => q.eq("partId", p._id)).filter((q) => q.eq(q.field("status"), "new")).first());
       out.push({ _id: p._id, name: p.name, phase: p.phase, qty: p.qty, cost: p.cost, vendor: p.vendor, pn: p.pn, status: p.status, sponsor: p.sponsor ? sponsorLabel(p.sponsor) : null, pending });
     }
@@ -63,9 +64,17 @@ export const advance = mutation({
     await requireCrew(ctx);
     const p = await ctx.db.get(id);
     if (!p) return;
-    const order = ["need", "ordered", "received", "installed"] as const;
-    const next = order[(order.indexOf(p.status) + 1) % order.length];
+    // Tap-to-advance walks the buying workflow. Hot behaves like need; hold comes back to need.
+    const next = p.status === "hot" ? "ordered" : p.status === "hold" ? "need" : p.status === "need" ? "ordered" : p.status === "ordered" ? "received" : p.status === "received" ? "installed" : "need";
     await ctx.db.patch(id, { status: next, updated: Date.now() });
+  },
+});
+
+export const setStatus = mutation({
+  args: { id: v.id("parts"), status },
+  handler: async (ctx, { id, status: s }) => {
+    await requireCrew(ctx);
+    await ctx.db.patch(id, { status: s, updated: Date.now() });
   },
 });
 

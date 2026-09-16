@@ -49,7 +49,8 @@ export default defineSchema({
     cost: v.number(),
     pn: v.string(),
     eta: v.string(), // YYYY-MM-DD or ""
-    status: v.union(v.literal("need"), v.literal("ordered"), v.literal("received"), v.literal("installed")),
+    // hot = needed now, hold = parked but keep the research
+    status: v.union(v.literal("hot"), v.literal("need"), v.literal("ordered"), v.literal("received"), v.literal("installed"), v.literal("hold")),
     note: v.string(),
     updated: v.number(),
     public: v.optional(v.boolean()), // listed on the public Adopt-a-part page

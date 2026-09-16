@@ -9,7 +9,7 @@ import { Adopt } from "./Adopt";
 export const revalidate = 60;
 
 function openCount(parts: { sponsor: string | null; pending: boolean; status: string }[]) {
-  return parts.filter((p) => !p.sponsor && !p.pending && p.status === "need").length;
+  return parts.filter((p) => !p.sponsor && !p.pending && (p.status === "need" || p.status === "hot")).length;
 }
 
 export async function generateMetadata(): Promise<Metadata> {

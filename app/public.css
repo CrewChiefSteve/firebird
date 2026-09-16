@@ -187,3 +187,5 @@ footer .sp{flex:1}
 .pledge .fine{font-family:var(--sans);font-size:13px;color:var(--muted);margin:0}
 .pledge .ok{font-family:var(--sans);font-size:17px;margin:0}
 @media (max-width:700px){.adopt-call{grid-template-columns:1fr}.plist .p{grid-template-columns:1fr auto}.plist .p .cost{grid-column:2}.pledge .grid{grid-template-columns:1fr}}
+
+.plist .p .hotnow{display:inline-block;margin-left:8px;font-family:var(--sans);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--oxide);border:1px solid var(--oxide);border-radius:999px;padding:1px 7px;vertical-align:middle}

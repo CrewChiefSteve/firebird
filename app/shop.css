@@ -195,3 +195,12 @@
 .shop .fixstart .m{color:var(--muted);font-size:12px}
 .shop .fixstart .row{gap:6px}
 @media (max-width:700px){.shop .fixstart .r{grid-template-columns:8px 1fr}.shop .fixstart .row{grid-column:2}}
+
+/* hot / hold statuses */
+.shop .pill.hot{background:var(--crit);color:#fff}
+.shop .pill.hold{background:var(--line);color:var(--muted)}
+.shop .stcell{white-space:nowrap}
+.shop .minis{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.shop .mini{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.shop .mini.hot{border-color:var(--crit);color:var(--crit)}
+.shop .mini:hover{background:var(--surface)}
