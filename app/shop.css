@@ -204,3 +204,6 @@
 .shop .mini{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
 .shop .mini.hot{border-color:var(--crit);color:var(--crit)}
 .shop .mini:hover{background:var(--surface)}
+
+.shop .stat.hotlist{border-color:var(--crit);background:color-mix(in srgb,var(--crit) 8%,transparent)}
+.shop .stat.hotlist .num{color:var(--crit)}

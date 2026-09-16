@@ -27,6 +27,7 @@ export function Parts() {
   const open = rows.filter((p) => p.status === "hot" || p.status === "need" || p.status === "ordered");
   const openCost = open.reduce((a, p) => a + p.cost * p.qty, 0);
   const hot = rows.filter((p) => p.status === "hot");
+  const hotCost = hot.reduce((a, p) => a + p.cost * p.qty, 0);
   const held = rows.filter((p) => p.status === "hold");
   const heldCost = held.reduce((a, p) => a + p.cost * p.qty, 0);
   const totalCost = rows.filter((p) => p.status !== "hold").reduce((a, p) => a + p.cost * p.qty, 0);
@@ -48,6 +49,7 @@ export function Parts() {
     <>
       <section className="stats">
         <div className="stat hot"><div className="lbl">Parts outstanding</div><div className="val"><span className="num">{open.length}</span></div><div className="foot">{hot.length > 0 ? `${hot.length} hot · ` : ""}{rows.filter((p) => p.status === "need").length} not ordered{held.length > 0 ? ` · ${held.length} on hold` : ""}</div></div>
+        <div className={`stat${hot.length > 0 ? " hotlist" : ""}`}><div className="lbl">Hot list</div><div className="val"><span className="num">{money(hotCost)}</span></div><div className="foot">{hot.length === 0 ? "nothing marked hot" : `${hot.length} part${hot.length === 1 ? "" : "s"} needed now`}</div></div>
         <div className="stat"><div className="lbl">Open cost</div><div className="val"><span className="num">{money(openCost)}</span></div><div className="foot">{money(totalCost)} total listed{heldCost > 0 ? ` · ${money(heldCost)} on hold` : ""}</div></div>
       </section>
       <Pledges />
