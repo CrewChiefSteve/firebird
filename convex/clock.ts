@@ -18,9 +18,13 @@ export const board = query({
   },
 });
 
+/** How far back a punch can be backdated: half a day. */
+const MAX_BACK_MINUTES = 12 * 60;
+
 export const punchIn = mutation({
-  args: { who: v.string(), phase: v.string(), note: v.string() },
-  handler: async (ctx, { who, phase, note }) => {
+  // startedAgoMinutes: "forgot to clock in" — the punch starts this many minutes in the past.
+  args: { who: v.string(), phase: v.string(), note: v.string(), startedAgoMinutes: v.optional(v.number()) },
+  handler: async (ctx, { who, phase, note, startedAgoMinutes }) => {
     const me = await requireCrew(ctx);
     const target = await ctx.db.query("crew").withIndex("by_short", (q) => q.eq("short", who)).unique();
     if (!target || !target.canClock) throw new Error("That person doesn't clock in");
@@ -28,7 +32,22 @@ export const punchIn = mutation({
     const existing = await ctx.db.query("active").withIndex("by_who", (q) => q.eq("who", who)).unique();
     if (existing) return existing._id;
     void me;
-    return await ctx.db.insert("active", { who, phase, note, start: Date.now() });
+    const back = Math.min(MAX_BACK_MINUTES, Math.max(0, Math.round(startedAgoMinutes ?? 0)));
+    return await ctx.db.insert("active", { who, phase, note, start: Date.now() - back * 60000 });
+  },
+});
+
+/** Already on the clock but punched late: slide the start time back by `backMinutes`. */
+export const adjustStart = mutation({
+  args: { who: v.string(), backMinutes: v.number() },
+  handler: async (ctx, { who, backMinutes }) => {
+    await requireCrew(ctx);
+    const a = await ctx.db.query("active").withIndex("by_who", (q) => q.eq("who", who)).unique();
+    if (!a) throw new Error("Not on the clock");
+    const floor = Date.now() - MAX_BACK_MINUTES * 60000;
+    const start = Math.max(floor, a.start - Math.max(0, Math.round(backMinutes)) * 60000);
+    await ctx.db.patch(a._id, { start });
+    return start;
   },
 });
 

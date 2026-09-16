@@ -5,14 +5,19 @@ import { api } from "@/convex/_generated/api";
 import { SHOP_PHASES } from "@/lib/project";
 import { fmtClock, fmtDate, fmtH, todayIso } from "./util";
 
+const AGO: [number, string][] = [[0, "No, just now"], [15, "Started 15 min ago"], [30, "Started 30 min ago"], [45, "Started 45 min ago"], [60, "Started 1 hour ago"], [90, "Started 1.5 hours ago"], [120, "Started 2 hours ago"], [180, "Started 3 hours ago"], [240, "Started 4 hours ago"]];
+const fmtTime = (t: number) => new Date(t).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
 export function Clock() {
   const board = useQuery(api.clock.board);
   const punchIn = useMutation(api.clock.punchIn);
   const punchOut = useMutation(api.clock.punchOut);
+  const adjustStart = useMutation(api.clock.adjustStart);
   const addManual = useMutation(api.clock.addManual);
   const remove = useMutation(api.clock.remove);
   const [phase, setPhase] = useState(SHOP_PHASES[0]);
   const [note, setNote] = useState("");
+  const [ago, setAgo] = useState(0); // minutes, for "forgot to clock in"
   const [busy, setBusy] = useState<string | null>(null);
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 15000); return () => clearInterval(t); }, []);
@@ -39,7 +44,7 @@ export function Clock() {
     setBusy(who);
     try {
       if (active.some((a) => a.who === who)) await punchOut({ who });
-      else await punchIn({ who, phase, note: note.trim() });
+      else { await punchIn({ who, phase, note: note.trim(), startedAgoMinutes: ago }); setAgo(0); }
     } finally { setBusy(null); }
   }
   async function submitManual() {
@@ -72,6 +77,11 @@ export function Clock() {
               <select value={phase} onChange={(e) => setPhase(e.target.value)}>{SHOP_PHASES.map((p) => <option key={p}>{p}</option>)}</select>
             </label>
             <label className="f">Note (optional)<input value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. driver floor pan" /></label>
+            <label className="f">Forgot to clock in?
+              <select value={ago} onChange={(e) => setAgo(Number(e.target.value))}>
+                {AGO.map(([m, label]) => <option key={m} value={m}>{label}</option>)}
+              </select>
+            </label>
           </div>
           <div className="clock-grid">
             {clockers.map((c) => {
@@ -87,6 +97,22 @@ export function Clock() {
               );
             })}
           </div>
+
+          {active.length > 0 && (
+            <div className="fixstart">
+              {active.map((a) => (
+                <div className="r" key={a._id} style={{ ["--pc" as string]: byWho[a.who]?.color ?? "#888" }}>
+                  <i />
+                  <div>{byWho[a.who]?.name ?? a.who} on the clock since <b className="num">{fmtTime(a.start)}</b><span className="m"> · punched in late? slide the start back</span></div>
+                  <div className="row">
+                    {[15, 30, 60, 120].map((m) => (
+                      <button key={m} className="btn quiet" onClick={() => adjustStart({ who: a.who, backMinutes: m })}>-{m < 60 ? m + " min" : m / 60 + " hr"}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           <details>
             <summary>Add hours by hand</summary>
