@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Install } from "./Install";
 import { useQuery } from "convex/react";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export function Shop() {
       <div className="top">
         <div>
           <h1>Trans Am <span>Shop Board</span></h1>
-          <div className="sub">Signed in as {crew.name} · <SignOutButton><button className="linkbtn">sign out</button></SignOutButton> · <Link href="/">public site</Link></div>
+          <div className="sub">Signed in as {crew.name} · <SignOutButton><button className="linkbtn">sign out</button></SignOutButton> · <Link href="/">public site</Link> · <Install /></div>
         </div>
         <nav className="tabs">
           {TABS.map(([k, label]) => (
