@@ -1,0 +1,11 @@
+{
+  "Comment": "Resend sending records for crewchiefsteve.com (pledge emails from Project Trans Am)",
+  "Changes": [
+    { "Action": "UPSERT", "ResourceRecordSet": { "Name": "resend._domainkey.crewchiefsteve.com", "Type": "TXT", "TTL": 300,
+      "ResourceRecords": [ { "Value": "\"p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDMrPO4DqEC2VhpGfh2qAAjC0b/RZ1WA4vPU53MGu2DdWTB9qJRlhPiCYx0BjjjivS3NvPIwraPR1xscxgueBQRjiWBbgIY1T8L+wVihbT50okp9duVQSWQUJuQyr8kRXTnbz0v4tfMaWZDFm9cc1U+kaA08lO2MGvC1KpkehascQIDAQAB\"" } ] } },
+    { "Action": "UPSERT", "ResourceRecordSet": { "Name": "rsend.crewchiefsteve.com", "Type": "CNAME", "TTL": 300,
+      "ResourceRecords": [ { "Value": "rsend.forge.rmta.net" } ] } },
+    { "Action": "UPSERT", "ResourceRecordSet": { "Name": "send.crewchiefsteve.com", "Type": "CNAME", "TTL": 300,
+      "ResourceRecords": [ { "Value": "send.forge.rmta.net" } ] } }
+  ]
+}
