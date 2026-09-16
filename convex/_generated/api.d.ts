@@ -16,6 +16,7 @@ import type * as phases from "../phases.js";
 import type * as pledges from "../pledges.js";
 import type * as posts from "../posts.js";
 import type * as receipts from "../receipts.js";
+import type * as scan from "../scan.js";
 import type * as seed from "../seed.js";
 import type * as tasks from "../tasks.js";
 
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   pledges: typeof pledges;
   posts: typeof posts;
   receipts: typeof receipts;
+  scan: typeof scan;
   seed: typeof seed;
   tasks: typeof tasks;
 }>;

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { money, todayIso } from "./util";
@@ -37,10 +37,12 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
   const setReimbursed = useMutation(api.receipts.setReimbursed);
   const reimburseAll = useMutation(api.receipts.reimburseAll);
   const uploadUrl = useMutation(api.receipts.generateUploadUrl);
+  const readReceipt = useAction(api.scan.read);
 
   const [form, setForm] = useState({ who: me, date: todayIso(), vendor: "", total: "", phase: "other", note: "" });
   const [file, setFile] = useState<Pending | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [reading, setReading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
   const [filter, setFilter] = useState<"all" | "owed" | string>("all");
@@ -87,8 +89,30 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
       const res = await fetch(url, { method: "POST", headers: { "Content-Type": blob.type || "image/jpeg" }, body: blob });
       const { storageId } = await res.json();
       setFile({ storageId, kind, preview: kind === "image" ? URL.createObjectURL(blob) : "", name: f.name });
+      if (kind === "image") await readInto(storageId);
     } catch (e) { setMsg("Upload failed: " + (e as Error).message); }
     finally { setUploading(false); }
+  }
+
+  /** Read the photo and fill whatever the form doesn't have yet. Typed values win; the default date and "Other" phase don't. */
+  async function readInto(storageId: Id<"_storage">) {
+    setReading(true); setMsg("Reading the receipt…");
+    try {
+      const r = await readReceipt({ storageId });
+      const paid = [r.paymentMethod, r.cardLast4 ? "ending " + r.cardLast4 : ""].filter(Boolean).join(" ");
+      setForm((f) => ({
+        ...f,
+        vendor: f.vendor || r.vendor || "",
+        total: f.total || (r.total != null ? r.total.toFixed(2) : ""),
+        date: r.date ?? f.date,
+        phase: f.phase === "other" && r.phaseKey ? r.phaseKey : f.phase,
+        note: f.note || r.description || "",
+      }));
+      const missing = [!r.vendor && "vendor", r.total == null && "amount", !r.date && "date"].filter(Boolean);
+      setMsg(missing.length > 0 ? `Read what it could. Fill in the ${missing.join(", ")}.` : r.reviewNeeded ? `Filled in. Double-check the numbers${r.notes ? ": " + r.notes : ""}.` : `Filled in from the receipt${paid ? ", paid by " + paid : ""}. Check it and hit Enter it.`);
+    } catch (e) {
+      setMsg("Couldn't read it, type it in. " + (e as Error).message.replace(/^.*Uncaught Error: /, "").split("\n")[0]);
+    } finally { setReading(false); }
   }
 
   async function submit(e: React.FormEvent) {
@@ -141,18 +165,19 @@ export function Ledger({ me, canPay }: { me: string; canPay: boolean }) {
               <label className="f">Phase<select value={form.phase} onChange={set("phase")}>{phases.map((p) => <option key={p.key} value={p.key}>{p.name}</option>)}<option value="other">Other</option></select></label>
               <label className="f">What for<input value={form.note} onChange={set("note")} placeholder="ball joints, tie rod ends" /></label>
             </div>
-            <label className="f">Receipt photo or PDF <span className="hint">(optional)</span>
+            <label className="f">Receipt photo or PDF <span className="hint">(optional · a photo fills the form in for you)</span>
               <input type="file" accept="image/*,application/pdf" onChange={(e) => pick(e.target.files)} />
             </label>
             {(file || uploading) && (
               <div className="thumbs">
-                <div className={`thumb${uploading ? " uploading" : ""}`}>
-                  {uploading ? "Uploading…" : file?.kind === "image" ? <img src={file.preview} alt="" /> : <span>{file?.name}</span>}
+                <div className={`thumb${uploading || reading ? " uploading" : ""}`}>
+                  {uploading && !file ? "Uploading…" : file?.kind === "image" ? <img src={file.preview} alt="" /> : <span>{file?.name}</span>}
+                  {reading && <span className="reading">Reading…</span>}
                 </div>
               </div>
             )}
             <div className="row">
-              <button className="btn primary" type="submit" disabled={saving || uploading}>{saving ? "Saving…" : "Enter it"}</button>
+              <button className="btn primary" type="submit" disabled={saving || uploading || reading}>{saving ? "Saving…" : reading ? "Reading receipt…" : "Enter it"}</button>
               <span className="hint" style={{ alignSelf: "center" }}>{isPayer(form.who) ? "Paid from project funds. Nothing owed." : `${name(form.who)} gets reimbursed for this.`}</span>
             </div>
           </form>

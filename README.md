@@ -32,6 +32,11 @@ npx convex deploy -y                  # backend to production
 vercel deploy --prod --yes            # app to production
 ```
 
+Deployment env vars (`npx convex env set NAME value --prod`):
+
+- `RESEND_API_KEY` sends the Adopt-a-part pledge emails. `PLEDGE_TO`, `PLEDGE_FROM`, `SITE_URL` override the defaults.
+- `OPENAI_API_KEY` turns on the receipt reader on the Ledger tab (same setup as reccat and 1099Pro). A photo of a receipt fills in vendor, amount, date, phase and what-for. `OPENAI_RECEIPT_MODEL` overrides the default `gpt-4.1-mini`. Without the key the form still works, you just type it in.
+
 ## Who can do what
 
 `crew` rows (seeded by `convex/seed.ts`):
