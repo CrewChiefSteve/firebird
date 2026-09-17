@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 
@@ -84,5 +84,16 @@ export const remove = mutation({
   handler: async (ctx, { id }) => {
     await requireCrew(ctx);
     await ctx.db.delete(id);
+  },
+});
+
+/** Admin knob, run from the CLI, for putting a job up without signing in:
+ *  npx convex run --prod jobs:put '{"title":"...","where":"...","phase":"POR-15","priority":"now","time":"","needs":"a\nb","steps":"1\n2"}'
+ */
+export const put = internalMutation({
+  args: { ...fields, addedBy: v.optional(v.string()) },
+  handler: async (ctx, { addedBy, ...data }) => {
+    const now = Date.now();
+    return await ctx.db.insert("jobs", { ...data, status: "open", addedBy: addedBy ?? "steve", createdAt: now, updatedAt: now });
   },
 });
