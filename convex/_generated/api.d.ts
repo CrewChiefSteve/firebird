@@ -10,6 +10,7 @@
 
 import type * as clock from "../clock.js";
 import type * as crew from "../crew.js";
+import type * as jobs from "../jobs.js";
 import type * as lib from "../lib.js";
 import type * as parts from "../parts.js";
 import type * as phases from "../phases.js";
@@ -29,6 +30,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   clock: typeof clock;
   crew: typeof crew;
+  jobs: typeof jobs;
   lib: typeof lib;
   parts: typeof parts;
   phases: typeof phases;

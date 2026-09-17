@@ -32,6 +32,27 @@ export default defineSchema({
     paidAt: v.optional(v.number()),
   }).index("by_start", ["start"]).index("by_who", ["who", "start"]),
 
+  // The whiteboard: self-contained jobs anyone can walk in cold and do. Steps and
+  // materials live on the card so nobody has to ask where the POR-15 is.
+  jobs: defineTable({
+    title: v.string(),
+    where: v.string(), // "truck area", "driver door", "bench"
+    phase: v.string(), // phases.key / SHOP_PHASES, or "Other"
+    priority: v.union(v.literal("now"), v.literal("soon"), v.literal("whenever")),
+    time: v.string(), // rough, free text: "1 hr", "half a day"
+    needs: v.string(), // tools and materials, one per line, with where they are
+    steps: v.string(), // how to do it, one per line
+    status: v.union(v.literal("open"), v.literal("claimed"), v.literal("done")),
+    claimedBy: v.optional(v.string()), // crew.short
+    claimedAt: v.optional(v.number()),
+    doneBy: v.optional(v.string()),
+    doneAt: v.optional(v.number()),
+    result: v.optional(v.string()), // what whoever did it wants the next person to know
+    addedBy: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_status", ["status", "priority"]),
+
   tasks: defineTable({
     phase: v.string(),
     title: v.string(),

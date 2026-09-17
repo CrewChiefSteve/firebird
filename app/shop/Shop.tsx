@@ -7,6 +7,7 @@ import Link from "next/link";
 import { api } from "@/convex/_generated/api";
 import { Clock } from "./Clock";
 import { Board } from "./Board";
+import { Jobs } from "./Jobs";
 import { Parts } from "./Parts";
 import { Posts } from "./Posts";
 import { Payroll } from "./Payroll";
@@ -14,6 +15,7 @@ import { Ledger } from "./Ledger";
 
 const TABS = [
   ["clock", "Time clock"],
+  ["jobs", "Job board"],
   ["board", "Sprint"],
   ["parts", "Parts"],
   ["ledger", "Ledger"],
@@ -55,6 +57,7 @@ export function Shop() {
       </div>
       <div className="wrap">
         {tab === "clock" && <Clock />}
+        {tab === "jobs" && <Jobs me={crew.short} />}
         {tab === "board" && <Board />}
         {tab === "parts" && <Parts />}
         {tab === "ledger" && <Ledger me={crew.short} canPay={crew.canPay} />}
