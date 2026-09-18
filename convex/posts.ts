@@ -123,3 +123,19 @@ export const setLead = internalMutation({
     return photos.map((ph) => ph.caption ?? "");
   },
 });
+
+/** Admin knob: take one photo off a post. The uploaded file stays in storage, same as the ✕ in the editor.
+ *  npx convex run --prod posts:dropPhoto '{"slug":"2026-09-17-...","index":1}'
+ */
+export const dropPhoto = internalMutation({
+  args: { slug: v.string(), index: v.number() },
+  handler: async (ctx, { slug, index }) => {
+    const p = await ctx.db.query("posts").withIndex("by_slug", (q) => q.eq("slug", slug)).unique();
+    if (!p) throw new Error(`No post ${slug}`);
+    if (!Number.isInteger(index) || index < 0 || index >= p.photos.length) throw new Error(`Post has ${p.photos.length} photos, index ${index} is out of range`);
+    const dropped = p.photos[index];
+    const photos = p.photos.filter((_, i) => i !== index);
+    await ctx.db.patch(p._id, { photos, updatedAt: Date.now() });
+    return { dropped: dropped.caption ?? "", left: photos.map((ph) => ph.caption ?? "") };
+  },
+});
