@@ -108,3 +108,18 @@ export const patchText = internalMutation({
     return { slug, ...patch };
   },
 });
+
+/** Admin knob: move one photo to the front so it becomes the lead picture (front page card, share image, wide shot).
+ *  npx convex run --prod posts:setLead '{"slug":"2026-09-17-...","index":5}'
+ */
+export const setLead = internalMutation({
+  args: { slug: v.string(), index: v.number() },
+  handler: async (ctx, { slug, index }) => {
+    const p = await ctx.db.query("posts").withIndex("by_slug", (q) => q.eq("slug", slug)).unique();
+    if (!p) throw new Error(`No post ${slug}`);
+    if (!Number.isInteger(index) || index < 0 || index >= p.photos.length) throw new Error(`Post has ${p.photos.length} photos, index ${index} is out of range`);
+    const photos = [p.photos[index], ...p.photos.filter((_, i) => i !== index)];
+    await ctx.db.patch(p._id, { photos, updatedAt: Date.now() });
+    return photos.map((ph) => ph.caption ?? "");
+  },
+});
