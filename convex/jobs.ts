@@ -97,3 +97,18 @@ export const put = internalMutation({
     return await ctx.db.insert("jobs", { ...data, status: "open", addedBy: addedBy ?? "steve", createdAt: now, updatedAt: now });
   },
 });
+
+/** Admin knob: mark a job done from the CLI, matched by title (case-insensitive substring).
+ *  npx convex run --prod jobs:adminFinish '{"title":"trunk area with POR-15","doneBy":"jen","result":"two coats"}'
+ */
+export const adminFinish = internalMutation({
+  args: { title: v.string(), doneBy: v.string(), result: v.optional(v.string()) },
+  handler: async (ctx, { title, doneBy, result }) => {
+    const all = await ctx.db.query("jobs").collect();
+    const hits = all.filter((j) => j.status !== "done" && j.title.toLowerCase().includes(title.toLowerCase()));
+    if (hits.length !== 1) throw new Error(`Matched ${hits.length} open jobs for "${title}": ${hits.map((j) => j.title).join(" | ")}`);
+    const now = Date.now();
+    await ctx.db.patch(hits[0]._id, { status: "done", doneBy, doneAt: now, result: result?.trim() || undefined, updatedAt: now });
+    return `done: ${hits[0].title}`;
+  },
+});
