@@ -11,7 +11,7 @@ export const board = query({
     const sessions = await ctx.db.query("sessions").withIndex("by_start").order("desc").take(500);
     return {
       me: { short: me.short, canClock: me.canClock, canPay: me.canPay, name: me.name },
-      crew: crew.map((c) => ({ short: c.short, name: c.name, color: c.color, canClock: c.canClock })),
+      crew: crew.map((c) => ({ short: c.short, name: c.name, color: c.color, canClock: c.canClock, canPay: c.canPay })),
       active,
       sessions,
     };

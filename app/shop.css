@@ -266,3 +266,10 @@
   .shop .form .span3{grid-column:span 2}
   .shop .joblist{grid-template-columns:1fr}
 }
+
+/* cash reimbursements on the Payroll tab */
+.shop .cash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.shop .pay.cash{gap:8px}
+.shop .pay.cash .btn.primary{justify-self:start}
+.shop table.ledger tr.tot td{border-top:2px solid var(--line);border-bottom:0;background:transparent}
+@media (max-width:900px){.shop .cash-grid{grid-template-columns:1fr}}
