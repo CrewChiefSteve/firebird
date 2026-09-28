@@ -273,3 +273,4 @@
 .shop .pay.cash .btn.primary{justify-self:start}
 .shop table.ledger tr.tot td{border-top:2px solid var(--line);border-bottom:0;background:transparent}
 @media (max-width:900px){.shop .cash-grid{grid-template-columns:1fr}}
+.shop table.ledger.payout tr.grand td{font-size:17px;border-top:3px double var(--line)}

@@ -23,6 +23,17 @@ export function Payroll({ canPay }: { canPay: boolean }) {
   const allOwed = (receipts ?? []).filter((r) => !r.reimbursed && owedTo.some((c) => c.short === r.who));
   const owedTotal = allOwed.reduce((a, r) => a + r.total, 0);
 
+  // Bottom line: wages through the chosen date plus unpaid receipts, per person and all together.
+  const [ty, tm, td] = through.split("-").map(Number);
+  const throughCutoff = new Date(ty, tm - 1, td, 23, 59, 59).getTime();
+  const payout = crew.map((c) => {
+    const min = c.canClock ? sessions.filter((s) => s.who === c.short && !s.paid && s.start <= throughCutoff).reduce((a, s) => a + s.minutes, 0) : 0;
+    const wages = (min / 60) * c.rate;
+    const cash = (receipts ?? []).filter((r) => r.who === c.short && !r.reimbursed && !c.canPay).reduce((a, r) => a + r.total, 0);
+    return { c, min, wages, cash, total: wages + cash };
+  }).filter((p) => p.total > 0 || p.c.canClock);
+  const grand = payout.reduce((a, p) => ({ min: a.min + p.min, wages: a.wages + p.wages, cash: a.cash + p.cash, total: a.total + p.total }), { min: 0, wages: 0, cash: 0, total: 0 });
+
   return (
     <>
     <section className="panel">
@@ -113,6 +124,29 @@ export function Payroll({ canPay }: { canPay: boolean }) {
             })}
           </div>
         )}
+      </div>
+    </section>
+
+    <section className="panel">
+      <header><h2>Total Payout</h2><span className="hint">hours through {through.slice(5).replace("-", "/")} plus unpaid receipts · pay the right-hand column</span></header>
+      <div className="bd">
+        <div className="ledger-wrap"><table className="ledger payout">
+          <thead><tr><th>Who</th><th className="num">Hours</th><th className="num">Rate</th><th className="num">Wages</th><th className="num">Receipts</th><th className="num">Pay this</th></tr></thead>
+          <tbody>
+            {payout.map(({ c, min, wages, cash, total }) => (
+              <tr key={c.short}>
+                <td><b>{c.name}</b></td>
+                <td className="num">{c.canClock ? fmtH(min) : "—"}</td>
+                <td className="num">{c.rate ? `${money(c.rate)}/hr` : "—"}</td>
+                <td className="num">{money(wages)}</td>
+                <td className="num">{money(cash)}</td>
+                <td className="num"><b>{money(total)}</b></td>
+              </tr>
+            ))}
+            <tr className="tot grand"><td><b>Total payout</b></td><td className="num"><b>{fmtH(grand.min)}</b></td><td></td><td className="num"><b>{money(grand.wages)}</b></td><td className="num"><b>{money(grand.cash)}</b></td><td className="num"><b>{money(grand.total)}</b></td></tr>
+          </tbody>
+        </table></div>
+        <div className="hint" style={{ marginLeft: 0 }}>After paying, hit &ldquo;Paid&rdquo; on each person&rsquo;s hours card and cash table above so this goes back to zero.</div>
       </div>
     </section>
     </>
