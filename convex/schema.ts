@@ -10,6 +10,7 @@ export default defineSchema({
     color: v.string(),
     canClock: v.boolean(), // Jennifer sees the clock but doesn't punch
     canPay: v.boolean(), // Jennifer marks hours paid
+    rate: v.optional(v.number()), // dollars per hour, for the Payroll tab
     order: v.number(),
   }).index("by_email", ["email"]).index("by_short", ["short"]),
 

@@ -50,3 +50,16 @@ export const setEmail = internalMutation({
     return { name: row.name, was: row.email, now: clean };
   },
 });
+
+/** Admin knob: hourly rate for the Payroll tab.
+ *  npx convex run --prod crew:setRate '{"short":"nick","rate":35}'
+ */
+export const setRate = internalMutation({
+  args: { short: v.string(), rate: v.number() },
+  handler: async (ctx, { short, rate }) => {
+    const row = await ctx.db.query("crew").withIndex("by_short", (q) => q.eq("short", short)).unique();
+    if (!row) throw new Error(`No crew row for ${short}`);
+    await ctx.db.patch(row._id, { rate });
+    return { name: row.name, rate };
+  },
+});
