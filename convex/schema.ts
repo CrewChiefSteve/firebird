@@ -144,4 +144,17 @@ export default defineSchema({
     reimbursedAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_who", ["who", "date"]).index("by_date", ["date"]),
+
+  // Money Jennifer has handed someone toward what they're owed, before a full settle-up.
+  // Open payments come off the Payroll payout; settling up closes them out.
+  payments: defineTable({
+    who: v.string(), // crew.short who got the money
+    amount: v.number(), // dollars
+    date: v.string(), // YYYY-MM-DD
+    note: v.string(),
+    by: v.string(), // crew.short who recorded it
+    applied: v.boolean(), // closed out by a settle-up
+    appliedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_who", ["who", "date"]),
 });
