@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireCrew } from "./lib";
 
@@ -54,5 +54,17 @@ export const settle = mutation({
     for (const r of receipts) if (!r.reimbursed) await ctx.db.patch(r._id, { reimbursed: true, reimbursedAt: now });
     const payments = await ctx.db.query("payments").withIndex("by_who", (q) => q.eq("who", who)).collect();
     for (const p of payments) if (!p.applied) await ctx.db.patch(p._id, { applied: true, appliedAt: now });
+  },
+});
+
+/** Admin knob: record a payment from the CLI.
+ *  npx convex run --prod payments:put '{"who":"steve","amount":500,"date":"2026-09-29","note":"","by":"jen"}'
+ */
+export const put = internalMutation({
+  args: { who: v.string(), amount: v.number(), date: v.string(), note: v.string(), by: v.string(), at: v.optional(v.number()) },
+  handler: async (ctx, { who, amount, date, note, by, at }) => {
+    const to = await ctx.db.query("crew").withIndex("by_short", (q) => q.eq("short", who)).unique();
+    if (!to) throw new Error(`No crew member ${who}`);
+    return await ctx.db.insert("payments", { who, amount, date, note, by, applied: false, createdAt: at ?? Date.now() });
   },
 });
