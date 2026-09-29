@@ -139,3 +139,30 @@ export const dropPhoto = internalMutation({
     return { dropped: dropped.caption ?? "", left: photos.map((ph) => ph.caption ?? "") };
   },
 });
+
+/** Admin knob: an upload URL for posting photos from the CLI. */
+export const adminUploadUrl = internalMutation({
+  args: {},
+  handler: async (ctx) => await ctx.storage.generateUploadUrl(),
+});
+
+/** Admin knob: create a post from the CLI after uploading its photos with adminUploadUrl. */
+export const adminCreate = internalMutation({
+  args: {
+    title: v.string(),
+    date: v.string(),
+    phase: v.string(),
+    summary: v.string(),
+    body: v.string(),
+    photos: v.array(v.object({ storageId: v.id("_storage"), caption: v.optional(v.string()) })),
+    published: v.boolean(),
+  },
+  handler: async (ctx, data) => {
+    const now = Date.now();
+    let slug = `${data.date}-${slugify(data.title)}`;
+    let n = 2;
+    while (await ctx.db.query("posts").withIndex("by_slug", (q) => q.eq("slug", slug)).unique()) slug = `${data.date}-${slugify(data.title)}-${n++}`;
+    await ctx.db.insert("posts", { ...data, slug, createdAt: now, updatedAt: now });
+    return slug;
+  },
+});
