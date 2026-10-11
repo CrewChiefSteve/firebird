@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Pressable, Text, View } from "react-native";
+import { Stack, type ErrorBoundaryProps } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
@@ -19,8 +20,24 @@ import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4/600S
 import { JetBrainsMono_400Regular } from "@expo-google-fonts/jetbrains-mono/400Regular";
 import { JetBrainsMono_600SemiBold } from "@expo-google-fonts/jetbrains-mono/600SemiBold";
 import { F, useColors } from "@/lib/theme";
+import { errText } from "@/lib/format";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+/** A screen that throws (say, a query the backend doesn't have yet) gets this instead of a blank or red page. */
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  const c = useColors();
+  return (
+    <View style={{ flex: 1, backgroundColor: c.bg, padding: 24, justifyContent: "center", gap: 14 }}>
+      <Text style={{ fontFamily: "BarlowCondensed_700Bold", fontSize: 28, textTransform: "uppercase", color: c.ink }}>Something went sideways</Text>
+      <Text style={{ fontSize: 15, lineHeight: 21, color: c.ink2 }}>This screen couldn’t load. Check the connection and try again. If it keeps happening, tell Steve what you were doing.</Text>
+      <Text selectable style={{ fontSize: 12, color: c.muted }}>{errText(error)}</Text>
+      <Pressable onPress={retry} style={{ backgroundColor: c.ink, borderRadius: 6, paddingVertical: 12, alignItems: "center" }}>
+        <Text style={{ color: c.bg, fontWeight: "700", fontSize: 15 }}>Try again</Text>
+      </Pressable>
+    </View>
+  );
+}
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, { unsavedChangesWarning: false });
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
@@ -52,6 +69,7 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="sso-callback" options={{ headerShown: false }} />
           <Stack.Screen name="(public)" options={{ headerShown: false }} />
           <Stack.Screen name="(shop)" options={{ headerShown: false }} />
           <Stack.Screen name="post/[slug]" options={{ title: "Build log" }} />

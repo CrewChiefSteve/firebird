@@ -1,4 +1,5 @@
-import { ScrollView, Text, View } from "react-native";
+import { Animated, ScrollView, Text, View } from "react-native";
+import { useRef } from "react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -75,9 +76,18 @@ export default function Home() {
   const openParts = (parts ?? []).filter(isOpenPart);
   const sponsors = Array.from(new Set((parts ?? []).map((p) => p.sponsor).filter((s): s is string => !!s)));
   const thanks = [...sponsors, ...PROJECT.thanks];
+  // No header on this screen, so once the hero scrolls away a bar fades in behind the status bar.
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const scrim = scrollY.interpolate({ inputRange: [300, 400], outputRange: [0, 1], extrapolate: "clamp" });
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: c.bg }} contentContainerStyle={{ paddingBottom: 48 }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
+    <Animated.ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingBottom: 48 }}
+      scrollEventThrottle={16}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
+    >
       <View style={{ backgroundColor: "#000", minHeight: 440 + insets.top, justifyContent: "flex-end" }}>
         <Image source={{ uri: photo(PROJECT.heroPhoto) }} style={{ position: "absolute", inset: 0, opacity: 0.85 }} contentFit="cover" accessibilityLabel="The Trans Am shell on its dolly in the shop" />
         <LinearGradient colors={["rgba(10,8,6,0)", "rgba(10,8,6,.88)"]} locations={[0.25, 1]} style={{ position: "absolute", inset: 0 }} />
@@ -146,6 +156,8 @@ export default function Home() {
         <Btn title="Share Joe’s Trans Am" onPress={() => share(PROJECT.siteUrl + "/")} />
         <Muted style={{ textAlign: "center" }}>Built in the shop by Jennifer, Steve & Nick</Muted>
       </View>
-    </ScrollView>
+    </Animated.ScrollView>
+    <Animated.View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: insets.top, backgroundColor: c.bar, opacity: scrim }} />
+    </View>
   );
 }

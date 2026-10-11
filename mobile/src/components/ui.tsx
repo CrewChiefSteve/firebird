@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, createContext, useContext, useEffect, useRef } from "react";
 import {
-  ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleProp, Text, TextInput,
+  ActivityIndicator, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleProp, Text, TextInput,
   TextInputProps, TextStyle, View, ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,15 +10,19 @@ import { addDays, dayLabel, todayIso } from "@/lib/format";
 /** Scrolling page body with the page background and room at the bottom. */
 export function Screen({ children, pad = true, style }: { children: ReactNode; pad?: boolean; style?: StyleProp<ViewStyle> }) {
   const c = useColors();
+  const insets = useSafeAreaInsets();
+  // Android draws edge to edge, so the window no longer shrinks for the keyboard: pad for it here.
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: c.bg }}
-      contentContainerStyle={[{ padding: pad ? 16 : 0, paddingBottom: 48, gap: 14 }, style]}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-    >
-      {children}
-    </ScrollView>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, backgroundColor: c.bg }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={[{ padding: pad ? 16 : 0, paddingBottom: 48 + insets.bottom, gap: 14 }, style]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      >
+        {children}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -61,10 +65,12 @@ export function Num({ children, style }: TProps) {
 export function Card({ children, accent, style, onPress }: { children: ReactNode; accent?: string; style?: StyleProp<ViewStyle>; onPress?: () => void }) {
   const c = useColors();
   const inner = (
+    <InRow.Provider value={false}>
     <View style={[{ backgroundColor: c.surface, borderWidth: 1, borderColor: accent ?? c.line, borderRadius: 8, padding: 14, gap: 8, overflow: "hidden" }, style]}>
       {accent && <View style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, backgroundColor: accent }} />}
       {children}
     </View>
+    </InRow.Provider>
   );
   return onPress ? <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>{inner}</Pressable> : inner;
 }
@@ -99,8 +105,19 @@ export function Stat({ label, value, unit, foot, accent, tone }: { label: string
   );
 }
 
+// Fields placed side by side in a Row split the width evenly instead of sizing to what's typed.
+const InRow = createContext(false);
+
 export function Row({ children, gap = 8, wrap, style }: { children: ReactNode; gap?: number; wrap?: boolean; style?: StyleProp<ViewStyle> }) {
-  return <View style={[{ flexDirection: "row", alignItems: "center", gap, flexWrap: wrap ? "wrap" : "nowrap" }, style]}>{children}</View>;
+  return (
+    <InRow.Provider value>
+      <View style={[{ flexDirection: "row", alignItems: "center", gap, flexWrap: wrap ? "wrap" : "nowrap" }, style]}>{children}</View>
+    </InRow.Provider>
+  );
+}
+
+function useFieldBox(): ViewStyle {
+  return useContext(InRow) ? { gap: 6, flex: 1, minWidth: 0 } : { gap: 6, alignSelf: "stretch" };
 }
 
 type BtnKind = "primary" | "default" | "quiet" | "good" | "danger" | "gold";
@@ -172,8 +189,9 @@ export function Chips<T extends string | number>({ options, value, onChange, lab
 
 export function Field({ label, hint, style, ...props }: TextInputProps & { label?: string; hint?: string }) {
   const c = useColors();
+  const box = useFieldBox();
   return (
-    <View style={{ gap: 6, flexGrow: 1, flexShrink: 1 }}>
+    <View style={box}>
       {label ? <Label>{label}{hint ? <Text style={{ textTransform: "none", letterSpacing: 0, fontFamily: F.sans }}>  {hint}</Text> : null}</Label> : null}
       <TextInput
         placeholderTextColor={c.muted}
@@ -190,6 +208,7 @@ export function Field({ label, hint, style, ...props }: TextInputProps & { label
 /** A day picker without a native dependency: step back and forward a day at a time. */
 export function DateField({ label, value, onChange, allowFuture }: { label?: string; value: string; onChange: (iso: string) => void; allowFuture?: boolean }) {
   const c = useColors();
+  const box = useFieldBox();
   const atToday = value >= todayIso();
   const step = (n: number) => onChange(addDays(value, n));
   const btn = (text: string, n: number, disabled = false) => (
@@ -199,7 +218,7 @@ export function DateField({ label, value, onChange, allowFuture }: { label?: str
     </Pressable>
   );
   return (
-    <View style={{ gap: 6, flexGrow: 1, flexShrink: 1 }}>
+    <View style={box}>
       {label ? <Label>{label}</Label> : null}
       <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: c.surface, borderWidth: 1, borderColor: c.line, borderRadius: 6, minHeight: 46 }}>
         {btn("‹", -1)}
@@ -250,9 +269,22 @@ export function Divider() {
 export function Sheet({ visible, onClose, title, children }: { visible: boolean; onClose: () => void; title: string; children: ReactNode }) {
   const c = useColors();
   const insets = useSafeAreaInsets();
+  // Android's back button hides the keyboard and asks the sheet to close in the same press. Treat a close
+  // request that lands with the keyboard up, or just after it went down, as "hide the keyboard" only, so a
+  // half-filled form isn't thrown away. A second press closes.
+  const kb = useRef({ up: false, downAt: 0 });
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () => { kb.current.up = true; });
+    const hide = Keyboard.addListener("keyboardDidHide", () => { kb.current = { up: false, downAt: Date.now() }; });
+    return () => { show.remove(); hide.remove(); };
+  }, []);
+  const requestClose = () => {
+    if (kb.current.up || Date.now() - kb.current.downAt < 400) return Keyboard.dismiss();
+    onClose();
+  };
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, justifyContent: "flex-end" }}>
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={requestClose}>
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable onPress={onClose} style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,.45)" }} accessibilityLabel="Close" />
         <View style={{ backgroundColor: c.bg, borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: "92%", paddingBottom: insets.bottom + 8 }}>
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingTop: 14, paddingBottom: 8 }}>
@@ -260,7 +292,7 @@ export function Sheet({ visible, onClose, title, children }: { visible: boolean;
             <Btn title="Close" kind="quiet" small onPress={onClose} />
           </View>
           <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 4, gap: 12 }} keyboardShouldPersistTaps="handled">
-            {children}
+            <InRow.Provider value={false}>{children}</InRow.Provider>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
