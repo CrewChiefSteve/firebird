@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
@@ -43,8 +45,10 @@ export async function shrink(p: Picked, maxSide: number, quality: number): Promi
 
 /** POST the file to a Convex upload URL and return its storage id. */
 export async function upload(uploadUrl: string, p: Picked): Promise<Id<"_storage">> {
-  const blob = await (await fetch(p.uri)).blob();
-  const res = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": p.mime }, body: blob });
+  // On a phone, Expo's fetch sends a React Native Blob as an empty body (Convex answers 400),
+  // so read the file's bytes and send those. The web build's blob: URLs work as a Blob.
+  const body = Platform.OS === "web" ? await (await fetch(p.uri)).blob() : await new File(p.uri).arrayBuffer();
+  const res = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": p.mime }, body });
   if (!res.ok) throw new Error(`Upload failed (${res.status})`);
   const { storageId } = await res.json();
   return storageId;

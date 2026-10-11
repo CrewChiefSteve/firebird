@@ -72,7 +72,7 @@ export default function PostEdit() {
       <Field label="Title" value={form.title} onChangeText={set("title")} placeholder="Floors are out" />
       <DateField label="Date" value={form.date} onChange={set("date")} />
       <Chips label="Phase" options={phases.map((p) => [p.key, p.name] as const)} value={form.phase} onChange={set("phase")} />
-      <Field label="One-line summary" value={form.summary} onChangeText={set("summary")} placeholder="Shows under the headline and on the Facebook card" />
+      <Field label="One-line summary" value={form.summary} onChangeText={set("summary")} placeholder="Under the headline and on share cards" />
       <Field label="Story" value={form.body} onChangeText={set("body")} multiline style={{ minHeight: 180 }}
         placeholder={"What got done, what’s next. Blank line between paragraphs. Start a line with - for a bullet."} />
 
