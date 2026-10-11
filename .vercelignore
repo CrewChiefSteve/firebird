@@ -1,0 +1,2 @@
+# The Expo app has its own install and its own builds (EAS); the website deploy doesn't need it.
+mobile

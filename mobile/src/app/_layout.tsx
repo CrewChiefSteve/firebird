@@ -1,0 +1,62 @@
+import { useEffect } from "react";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+import { ClerkProvider, useAuth } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { BarlowCondensed_600SemiBold } from "@expo-google-fonts/barlow-condensed/600SemiBold";
+import { BarlowCondensed_700Bold } from "@expo-google-fonts/barlow-condensed/700Bold";
+import { Barlow_400Regular } from "@expo-google-fonts/barlow/400Regular";
+import { Barlow_500Medium } from "@expo-google-fonts/barlow/500Medium";
+import { Barlow_600SemiBold } from "@expo-google-fonts/barlow/600SemiBold";
+import { Barlow_700Bold } from "@expo-google-fonts/barlow/700Bold";
+import { SourceSerif4_400Regular } from "@expo-google-fonts/source-serif-4/400Regular";
+import { SourceSerif4_400Regular_Italic } from "@expo-google-fonts/source-serif-4/400Regular_Italic";
+import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4/600SemiBold";
+import { JetBrainsMono_400Regular } from "@expo-google-fonts/jetbrains-mono/400Regular";
+import { JetBrainsMono_600SemiBold } from "@expo-google-fonts/jetbrains-mono/600SemiBold";
+import { F, useColors } from "@/lib/theme";
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, { unsavedChangesWarning: false });
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+export default function RootLayout() {
+  const c = useColors();
+  const [loaded, error] = useFonts({
+    BigShouldersDisplay_700Bold: require("@expo-google-fonts/big-shoulders-display/BigShouldersDisplay_700Bold.ttf"),
+    BigShouldersDisplay_800ExtraBold: require("@expo-google-fonts/big-shoulders-display/BigShouldersDisplay_800ExtraBold.ttf"),
+    BarlowCondensed_600SemiBold, BarlowCondensed_700Bold,
+    Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold,
+    SourceSerif4_400Regular, SourceSerif4_400Regular_Italic, SourceSerif4_600SemiBold,
+    JetBrainsMono_400Regular, JetBrainsMono_600SemiBold,
+  });
+  useEffect(() => { if (loaded || error) SplashScreen.hideAsync().catch(() => {}); }, [loaded, error]);
+  if (!loaded && !error) return null;
+
+  return (
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        <StatusBar style="auto" />
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: c.bar },
+            headerTintColor: c.barInk,
+            headerTitleStyle: { fontFamily: F.cond, fontSize: 20 },
+            headerBackButtonDisplayMode: "minimal",
+            contentStyle: { backgroundColor: c.bg },
+          }}
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(public)" options={{ headerShown: false }} />
+          <Stack.Screen name="(shop)" options={{ headerShown: false }} />
+          <Stack.Screen name="post/[slug]" options={{ title: "Build log" }} />
+        </Stack>
+      </ConvexProviderWithClerk>
+    </ClerkProvider>
+  );
+}

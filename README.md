@@ -5,12 +5,14 @@ It was Jennifer Jo Cobb's first car. Crew: Jennifer, Steve, and Nick.
 
 - **Public site:** https://firebird.crewchiefsteve.com (story, progress, build log)
 - **Shop board:** https://firebird.crewchiefsteve.com/shop (crew sign-in; time clock, sprint, parts, ledger, post editor, payroll)
+- **Phone app:** `mobile/` (Expo). Same Convex functions, same crew sign-in. See [mobile/README.md](mobile/README.md).
 
 ## Stack
 
 | Piece | What |
 |---|---|
 | App | Next.js 15 (App Router), deployed on Vercel project `firebird` (team crewchiefsteveAI) |
+| Phone app | Expo SDK 57 + Expo Router in `mobile/`, built with EAS |
 | Auth | Clerk app "Firebird". Only emails in the Convex `crew` table get past `/shop`. |
 | Data | Convex project `firebird`. Prod: capable-shepherd-203. Dev: diligent-mongoose-297. |
 | Photos | New uploads go to Convex file storage. The original photos live in `public/photos/`. |
@@ -56,5 +58,6 @@ app/                Next.js pages: / (public), /log/[slug], /shop, /sign-in
 app/shop/           shop board tabs (Clock, Board, Parts, Ledger, Posts, Payroll)
 convex/             schema, functions, seed
 lib/project.ts      story copy, people, gallery, milestones (edit here)
+mobile/             the Expo phone app (its own npm install)
 public/photos/      original web-sized photos
 ```
