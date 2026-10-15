@@ -4,7 +4,7 @@ import Constants from "expo-constants";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useClerk } from "@clerk/expo";
 import { api } from "@convex/_generated/api";
-import { DEMO, useQ } from "@/lib/data";
+import { useDemo, useQ } from "@/lib/data";
 import { useCrew } from "@/lib/crew";
 import { useColors } from "@/lib/theme";
 import { fmtH } from "@/lib/format";
@@ -14,6 +14,7 @@ import { Btn, Card, H3, Label, Muted, Row, Screen } from "@/components/ui";
 export default function More() {
   const c = useColors();
   const me = useCrew();
+  const demo = useDemo();
   const { signOut } = useClerk();
   const board = useQ(api.clock.board);
   const posts = useQ(api.posts.all);
@@ -33,11 +34,12 @@ export default function More() {
 
   return (
     <Screen>
-      <Label>Signed in as {me.name}{DEMO ? " · demo mode, nothing saves" : ""}</Label>
+      <Label>{demo ? "Sample data · nothing you change is saved" : `Signed in as ${me.name}`}</Label>
       {link("/sprint", "checkbox-outline", "Sprint & public progress", "Two-week task list, and the progress bars on the front page")}
       {link("/posts", "images-outline", "Build log posts", `Write updates with photos from the shop${drafts ? ` · ${drafts} draft${drafts === 1 ? "" : "s"}` : ""}`)}
       {link("/payroll", "cash-outline", "Payroll", `What each person is owed · ${fmtH(unpaidMin)} unpaid hrs${me.canPay ? "" : " · Jennifer marks these paid"}`)}
       {link("/home", "car-sport-outline", "The public side", "What everyone else sees: story, progress, build log, adopt a part")}
+      {link("/account", "person-circle-outline", "Your account", "Sign out, delete your account, privacy and support")}
       <Btn title="Open the shop board on the web" onPress={() => Linking.openURL(PROJECT.siteUrl + "/shop")} />
       <Btn title="Sign out" kind="quiet" onPress={() => signOut()} />
       <Muted style={{ textAlign: "center" }}>Trans Am {Constants.expoConfig?.version ?? ""}</Muted>

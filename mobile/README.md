@@ -29,7 +29,7 @@ http://localhost:8081/?demo
 http://localhost:8081/payroll?demo=jen
 ```
 
-Demo mode fills the crew screens from typed sample data in `src/lib/demo.ts` and turns writes into no-ops. It only exists in dev builds: release bundles leave the sample data out.
+Demo mode fills the crew screens from typed sample data in `src/lib/demo.ts` and turns writes into no-ops. In dev builds it's opt-in as above. In release builds the only way in is signing in as the App Review account (`EXPO_PUBLIC_REVIEW_EMAIL` in `eas.json`), so store reviewers try the crew tools without seeing or changing real data.
 
 ### Checks
 
@@ -91,6 +91,10 @@ On the **Firebird** app, Production instance → Configure → Native applicatio
 3. For "Continue with Google": add `firebird://sso-callback` under **Allowlist for mobile SSO redirect**.
 
 Email-code sign-in needs only step 1.
+
+### Store submission
+
+`docs/STORE_LAUNCH.md` is the checklist for both stores: what's ready, the steps only Steve can do, the listing copy, the Data safety and privacy-label answers, and the review notes. The graphics are in `store/`.
 
 ## Not done yet
 

@@ -4,7 +4,7 @@ import { Stack, type ErrorBoundaryProps } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import { ClerkProvider, useAuth } from "@clerk/expo";
+import { ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
@@ -21,6 +21,7 @@ import { JetBrainsMono_400Regular } from "@expo-google-fonts/jetbrains-mono/400R
 import { JetBrainsMono_600SemiBold } from "@expo-google-fonts/jetbrains-mono/600SemiBold";
 import { F, useColors } from "@/lib/theme";
 import { errText } from "@/lib/format";
+import { REVIEW_EMAIL, setReviewDemo } from "@/lib/data";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -37,6 +38,14 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       </Pressable>
     </View>
   );
+}
+
+/** The store-review account sees sample data (see useDemo in lib/data.ts). */
+function ReviewMode() {
+  const { user } = useUser();
+  const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? "";
+  useEffect(() => { setReviewDemo(!!REVIEW_EMAIL && email === REVIEW_EMAIL); }, [email]);
+  return null;
 }
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, { unsavedChangesWarning: false });
@@ -58,6 +67,7 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        <ReviewMode />
         <StatusBar style="auto" />
         <Stack
           screenOptions={{
@@ -73,6 +83,7 @@ export default function RootLayout() {
           <Stack.Screen name="(public)" options={{ headerShown: false }} />
           <Stack.Screen name="(shop)" options={{ headerShown: false }} />
           <Stack.Screen name="post/[slug]" options={{ title: "Build log" }} />
+          <Stack.Screen name="account" options={{ title: "Your account" }} />
         </Stack>
       </ConvexProviderWithClerk>
     </ClerkProvider>

@@ -6,6 +6,9 @@ export { PROJECT, SHOP_PHASES, SPRINT_PHASES, niceDate, daysUntil } from "@share
 /** The website's static photos (public/photos) are served from the live site. */
 export const photo = (p: string) => (/^https?:/.test(p) ? p : PROJECT.siteUrl + p);
 
+/** Where support and privacy requests go (same address the website's /privacy page gives). */
+export const SUPPORT_EMAIL = "steve@crewchiefsteve.ai";
+
 export const postUrl = (slug: string) => `${PROJECT.siteUrl}/log/${slug}`;
 
 export function share(url: string, title = PROJECT.title) {

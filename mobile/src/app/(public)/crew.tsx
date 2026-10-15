@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Platform, Switch, View } from "react-native";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { useClerk, useSignIn, useSignUp, useSSO } from "@clerk/expo";
 import { useMe } from "@/lib/data";
+import { PROJECT } from "@/lib/site";
 import { F, useColors } from "@/lib/theme";
 import { Body, Btn, Card, Display, Field, Label, Loading, Muted, P, Row, Screen } from "@/components/ui";
 
@@ -34,6 +35,10 @@ function SignInForm() {
   const [newAccount, setNewAccount] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  // Password sign-in is for accounts that have one, chiefly the App Review account
+  // (reviewers can't receive an emailed code). The crew use the code or Google.
+  const [usePassword, setUsePassword] = useState(false);
+  const [password, setPassword] = useState("");
 
   // Warm the browser on Android so the Google sheet opens quickly.
   useEffect(() => {
@@ -70,6 +75,19 @@ function SignInForm() {
         setNewAccount(false);
       }
       setStep("code");
+    } finally { setBusy(false); }
+  }
+
+  async function signInWithPassword() {
+    const address = email.trim().toLowerCase();
+    if (!address || !password) return setErr("Enter your email and password.");
+    setBusy(true); setErr("");
+    try {
+      const r = await signIn.password({ identifier: address, password });
+      if (r.error) return setErr(clerkErr(r.error).text);
+      if (signIn.status !== "complete") return startSecondStep();
+      const done = await signIn.finalize();
+      if (done.error) setErr(clerkErr(done.error).text);
     } finally { setBusy(false); }
   }
 
@@ -150,9 +168,23 @@ function SignInForm() {
     <Card style={{ gap: 12 }}>
       {step === "email" ? (
         <>
-          <Field label="Email" value={email} onChangeText={setEmail} placeholder="the address on the crew list" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress" onSubmitEditing={sendCode} returnKeyType="send" />
-          <Btn title="Email me a code" kind="primary" busy={busy} onPress={sendCode} />
-          {Platform.OS !== "web" && (
+          <Field label="Email" value={email} onChangeText={setEmail} placeholder="the address on the crew list" keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress" onSubmitEditing={usePassword ? undefined : sendCode} returnKeyType={usePassword ? "next" : "send"} />
+          {usePassword ? (
+            <>
+              <Field label="Password" value={password} onChangeText={setPassword} secureTextEntry autoComplete="current-password" textContentType="password" onSubmitEditing={signInWithPassword} returnKeyType="go" />
+              <Btn title="Sign in" kind="primary" busy={busy} onPress={signInWithPassword} />
+              <Btn title="Email me a code instead" kind="quiet" small onPress={() => { setUsePassword(false); setErr(""); }} />
+            </>
+          ) : (
+            <>
+              <Btn title="Email me a code" kind="primary" busy={busy} onPress={sendCode} />
+              <Btn title="Sign in with a password" kind="quiet" small onPress={() => { setUsePassword(true); setErr(""); }} />
+            </>
+          )}
+          {/* Google on Android only. On iPhone, App Store guideline 4.8 would require Sign in with
+              Apple beside it; the emailed code covers the crew there (Clerk matches the email, so a
+              Google account signs in fine with a code). Add Apple first if Google is wanted on iOS. */}
+          {Platform.OS === "android" && !usePassword && (
             <>
               <Muted style={{ textAlign: "center" }}>or</Muted>
               <Btn title="Continue with Google" busy={busy} onPress={google} />
@@ -212,6 +244,7 @@ export default function Crew() {
           <Body>You’re signed in as <Body style={{ fontFamily: F.serif6 }}>{me.email}</Body>, but that address isn’t on the crew list.</Body>
           <Muted>Ask Steve to add you, then sign in again.</Muted>
           <Btn title="Sign out" onPress={() => signOut()} />
+          <Btn title="Your account" kind="quiet" onPress={() => router.push("/account")} />
         </Card>
       ) : (
         <View style={{ gap: 12 }}>
@@ -219,6 +252,10 @@ export default function Crew() {
           <SignInForm />
         </View>
       )}
+      <Row style={{ justifyContent: "center" }} gap={18}>
+        <Btn title="Privacy" kind="quiet" small onPress={() => WebBrowser.openBrowserAsync(PROJECT.siteUrl + "/privacy")} />
+        <Btn title="Support" kind="quiet" small onPress={() => WebBrowser.openBrowserAsync(PROJECT.siteUrl + "/support")} />
+      </Row>
     </Screen>
   );
 }

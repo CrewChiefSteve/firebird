@@ -18,7 +18,8 @@
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_CONVEX_URL": "https://capable-shepherd-203.convex.cloud",
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuY3Jld2NoaWVmc3RldmUuY29tJA"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuY3Jld2NoaWVmc3RldmUuY29tJA",
+        "EXPO_PUBLIC_REVIEW_EMAIL": "appreview@crewchiefsteve.ai"
       },
       "android": {
         "buildType": "apk"
@@ -28,7 +29,8 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_CONVEX_URL": "https://capable-shepherd-203.convex.cloud",
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuY3Jld2NoaWVmc3RldmUuY29tJA"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuY3Jld2NoaWVmc3RldmUuY29tJA",
+        "EXPO_PUBLIC_REVIEW_EMAIL": "appreview@crewchiefsteve.ai"
       }
     }
   },
@@ -36,6 +38,10 @@
     "production": {
       "ios": {
         "ascAppId": "6821679783"
+      },
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
       }
     }
   }

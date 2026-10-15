@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { api } from "@convex/_generated/api";
 import { useQ } from "@/lib/data";
@@ -15,20 +16,21 @@ import { PostCard } from "@/components/PostCard";
 function Countdown() {
   const c = useColors();
   const { rolling, birthday } = PROJECT.milestones;
-  const card = (iso: string, what: string, sub: string, color: string) => {
+  const card = (iso: string, what: string, sub: string, color: string, label: string) => {
     const d = daysUntil(iso);
     return (
       <Card style={{ flex: 1, gap: 2 }}>
         <Text style={{ fontFamily: F.disp, fontSize: 52, lineHeight: 54, color }}>{d > 0 ? d : d === 0 ? "Today" : "Done"}</Text>
-        <P style={{ fontFamily: F.sans6 }}>{what}</P>
+        {/* Once the date passes, "Done days to a rolling chassis" reads wrong: name the milestone instead. */}
+        <P style={{ fontFamily: F.sans6 }}>{d > 0 ? what : label}</P>
         <Muted>{sub}</Muted>
       </Card>
     );
   };
   return (
     <Row gap={12} style={{ alignItems: "stretch", marginTop: -36, paddingHorizontal: 16 }}>
-      {card(rolling.date, "days to a rolling chassis", `Target ${niceDate(rolling.date)}`, c.oxide)}
-      {card(birthday.date, "days until Joe drives it", `${niceDate(birthday.date)} · his 80th`, c.gold)}
+      {card(rolling.date, "days to a rolling chassis", `Target ${niceDate(rolling.date)}`, c.oxide, rolling.label)}
+      {card(birthday.date, "days until Joe drives it", `${niceDate(birthday.date)} · his 80th`, c.gold, birthday.label)}
     </Row>
   );
 }
@@ -155,6 +157,11 @@ export default function Home() {
 
         <Btn title="Share Joe’s Trans Am" onPress={() => share(PROJECT.siteUrl + "/")} />
         <Muted style={{ textAlign: "center" }}>Built in the shop by Jennifer, Steve & Nick</Muted>
+        <Muted style={{ textAlign: "center" }}>A family project, not affiliated with General Motors. Pontiac, Firebird and Trans Am are GM trademarks.</Muted>
+        <Row style={{ justifyContent: "center" }} gap={18}>
+          <Btn title="Privacy" kind="quiet" small onPress={() => WebBrowser.openBrowserAsync(PROJECT.siteUrl + "/privacy")} />
+          <Btn title="Support" kind="quiet" small onPress={() => WebBrowser.openBrowserAsync(PROJECT.siteUrl + "/support")} />
+        </Row>
       </View>
     </Animated.ScrollView>
     <Animated.View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: insets.top, backgroundColor: c.bar, opacity: scrim }} />

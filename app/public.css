@@ -111,6 +111,9 @@ section{padding:56px 0 0}
 .article .body p{margin:0 0 1em}
 .article .body ul{padding-left:1.2em}
 .article .body li{margin:.3em 0}
+.article .body h2{font-size:30px;text-transform:uppercase;margin:1.4em 0 .5em}
+.article .body ol{padding-left:1.4em}
+footer a{color:var(--muted)}
 .article figure{margin:24px 0;border-radius:8px;overflow:hidden;background:#000}
 .article figure img{width:100%}
 .article figcaption{font-family:var(--sans);font-size:13px;color:var(--muted);padding:8px 0}
