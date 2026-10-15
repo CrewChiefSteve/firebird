@@ -1,5 +1,6 @@
 // Sample data for demo mode (see useQ in ./data.ts). Typed against the real Convex functions,
-// so a schema change that breaks a screen breaks the typecheck here too. Dev builds only.
+// so a schema change that breaks a screen breaks the typecheck here too. Ships in release builds
+// for the App Review account (see REVIEW_EMAIL in ./data.ts).
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "@convex/_generated/api";
 import type { Id, TableNames } from "@convex/_generated/dataModel";

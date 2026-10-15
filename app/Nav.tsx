@@ -26,6 +26,7 @@ export function Footer() {
       <span>Project Trans Am</span>
       <span className="sp" />
       <span>Built in the shop by Jennifer, Steve &amp; Nick</span>
+      <span><Link href="/privacy">Privacy</Link> · <Link href="/support">Support</Link></span>
     </footer>
   );
 }
